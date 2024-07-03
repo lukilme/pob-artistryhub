@@ -24,6 +24,11 @@ import org.jfree.ui.RefineryUtilities;
 public class Histogram extends ApplicationFrame {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Creates a new demo.
      *
      * @param title  the frame title.

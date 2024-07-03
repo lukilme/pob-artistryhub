@@ -5,7 +5,6 @@ import java.util.Objects;
 
 public class Presentation {
 
-	private Long id;
 	private LocalDate date;
 	private Artist artist;
 	private City city;
@@ -18,10 +17,9 @@ public class Presentation {
 		super();
 	}
 
-	public Presentation(Long id, LocalDate date, Artist artist, City city, double priceTicket, int duration,
-			int ticketsSold, int ticketsTotal) {
+	public Presentation(LocalDate date, Artist artist, City city, double priceTicket, int duration, int ticketsSold,
+			int ticketsTotal) {
 		super();
-		this.id = id;
 		this.date = date;
 		this.artist = artist;
 		this.city = city;
@@ -33,14 +31,13 @@ public class Presentation {
 
 	@Override
 	public String toString() {
-		return "Presentation [id=" + id + ", date=" + date + ", artist=" + artist + ", city=" + city + ", priceTicket="
-				+ priceTicket + ", duration=" + duration + ", ticketsSold=" + ticketsSold + ", ticketsTotal="
-				+ ticketsTotal + "]";
+		return "Presentation [ date=" + date + ", artist=" + artist + ", city=" + city + ", priceTicket=" + priceTicket
+				+ ", duration=" + duration + ", ticketsSold=" + ticketsSold + ", ticketsTotal=" + ticketsTotal + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(artist, city);
 	}
 
 	@Override
@@ -52,15 +49,7 @@ public class Presentation {
 		if (getClass() != obj.getClass())
 			return false;
 		Presentation other = (Presentation) obj;
-		return Objects.equals(id, other.id);
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+		return Objects.equals(artist, other.artist) && Objects.equals(city, other.city);
 	}
 
 	public LocalDate getDate() {

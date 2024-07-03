@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class City {
-	private Long id;
+	private int id;
 	private String name;
 	private List<Presentation> presentations;
 
@@ -12,7 +12,7 @@ public class City {
 		super();
 	}
 
-	public City(Long id, String name, List<Presentation> presentations) {
+	public City(int id, String name, List<Presentation> presentations) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -41,11 +41,11 @@ public class City {
 		return "City [id=" + id + ", name=" + name + ", presentations=" + presentations + "]";
 	}
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

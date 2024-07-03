@@ -15,9 +15,7 @@ public class Chart {
     dataset.addValue(150, "Sales", "February");
     dataset.addValue(180, "Sales", "January");
     dataset.addValue(260, "Sales", "February");
-   
- 
-    
+  
     
     JFreeChart chart = ChartFactory.createBarChart3D(
     	    "Monthly Sales",
