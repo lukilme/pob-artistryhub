@@ -1,20 +1,20 @@
 package com.artistryhub.model;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Artist {
-	private Long id;
+	private int id;
 	private String name;
-	private List<Presentation> presentations;
-	private List<String> type;
+	private ArrayList<Presentation> presentations;
+	private ArrayList<String> type;
 	private String biography;
 
 	public Artist() {
 		super();
 	}
 
-	public Artist(Long id, String name, List<Presentation> presentations, List<String> type, String biography) {
+	public Artist(int id, String name, ArrayList<Presentation> presentations, ArrayList<String> type, String biography) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -62,11 +62,11 @@ public class Artist {
 		this.type.remove(removedType);
 	}
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -78,19 +78,19 @@ public class Artist {
 		this.name = name;
 	}
 
-	public List<Presentation> getPresentations() {
+	public ArrayList<Presentation> getPresentations() {
 		return presentations;
 	}
 
-	public void setPresentations(List<Presentation> presentations) {
+	public void setPresentations(ArrayList<Presentation> presentations) {
 		this.presentations = presentations;
 	}
 
-	public List<String> getType() {
+	public ArrayList<String> getType() {
 		return type;
 	}
 
-	public void setType(List<String> type) {
+	public void setType(ArrayList<String> type) {
 		this.type = type;
 	}
 
