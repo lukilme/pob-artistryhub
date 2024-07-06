@@ -29,6 +29,7 @@ public class Utility {
 		
 		setting.common().objectClass(City.class).objectField("id").indexed(true);
 		setting.common().objectClass(Artist.class).objectField("id").indexed(true);
+		setting.common().objectClass(Artist.class).objectField("name").indexed(true);
 		
 		manager = Db4oEmbedded.openFile(setting, "database.db4o");
 		return manager;

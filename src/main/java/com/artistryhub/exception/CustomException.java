@@ -1,10 +1,10 @@
 package com.artistryhub.exception;
 
-public class FacadeException extends RuntimeException {
+public class CustomException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     private final ExceptionCode exceptionCode;
 
-    public FacadeException(String message, ExceptionCode exceptionCode) {
+    public CustomException(String message, ExceptionCode exceptionCode) {
         super(message);
         this.exceptionCode = exceptionCode;
     }
@@ -12,5 +12,4 @@ public class FacadeException extends RuntimeException {
     public ExceptionCode getExceptionCode() {
         return exceptionCode;
     }
-
 }
