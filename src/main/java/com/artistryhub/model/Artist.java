@@ -31,7 +31,7 @@ public class Artist {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(biography, id, name, presentations, type);
 	}
 
 	@Override
@@ -43,7 +43,8 @@ public class Artist {
 		if (getClass() != obj.getClass())
 			return false;
 		Artist other = (Artist) obj;
-		return Objects.equals(id, other.id);
+		return Objects.equals(biography, other.biography) && id == other.id && Objects.equals(name, other.name)
+				&& Objects.equals(presentations, other.presentations) && Objects.equals(type, other.type);
 	}
 
 	public void add(Presentation newPresentation) {

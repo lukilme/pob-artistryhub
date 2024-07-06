@@ -9,82 +9,76 @@ import com.db4o.ObjectContainer;
 import com.db4o.query.Query;
 
 public abstract class DAO<T> implements DAOInterface<T> {
-    protected static ObjectContainer manager;
-    protected static int currentMaxId = 1;
-    @SuppressWarnings("unused")
-    private Class<?> type;
+	protected static ObjectContainer manager;
+	protected static int currentMaxId = 1;
+	@SuppressWarnings("unused")
+	private Class<?> type;
 
+	protected Class<?> getType() {
+		Type genericSuperclass = getClass().getGenericSuperclass();
+		if (genericSuperclass instanceof ParameterizedType) {
+			Type[] actualTypeArguments = ((ParameterizedType) genericSuperclass).getActualTypeArguments();
+			if (actualTypeArguments.length > 0 && actualTypeArguments[0] instanceof Class) {
+				return (Class<?>) actualTypeArguments[0];
+			}
+		}
+		throw new IllegalArgumentException("Unable to determine type argument.");
+	}
 
+	public static void open() {
+		manager = Utility.connectDataBase();
+	}
 
-    protected Class<?> getType() {
-        Type genericSuperclass = getClass().getGenericSuperclass();
-        if (genericSuperclass instanceof ParameterizedType) {
-            Type[] actualTypeArguments = ((ParameterizedType) genericSuperclass).getActualTypeArguments();
-            if (actualTypeArguments.length > 0 && actualTypeArguments[0] instanceof Class) {
-                return (Class<?>) actualTypeArguments[0];
-            }
-        }
-        throw new IllegalArgumentException("Unable to determine type argument.");
-    }
+	public static void close() {
+		Utility.disconnect();
+	}
 
-    public static void open() {
-        manager = Utility.connectDataBase();
-    }
+	public void create(T obj) {
+		manager.store(obj);
+	}
 
-    public static void close() {
-        Utility.disconnect();
-    }
+	public T update(T obj) {
+		manager.store(obj);
+		return obj;
+	}
 
-    public void create(T obj) {
-        manager.store(obj);
-    }
+	public abstract T read(Object key);
 
-    public T update(T obj) {
-        manager.store(obj);
-        return obj;
-    }
+	public void delete(T obj) {
+		manager.delete(obj);
+	}
 
-    public abstract T read(Object key);
+	@SuppressWarnings("unchecked")
+	public List<T> readAll() {
+		manager.ext().purge();
+		Class<T> type = (Class<T>) getType();
+		Query query = manager.query();
+		query.constrain(type);
+		return (List<T>) query.execute();
+	}
 
-    public void delete(T obj) {
-        manager.delete(obj);
-    }
+	@SuppressWarnings("unchecked")
+	public void clear() {
+		Class<T> type = (Class<T>) getType();
+		Query q = manager.query();
+		q.constrain(type);
+		for (Object t : q.execute()) {
+			manager.delete(t);
+		}
+	}
 
-    @SuppressWarnings("unchecked")
-    public List<T> readAll() {
-        manager.ext().purge();
-        Class<T> type = (Class<T>) getType();
-        Query query = manager.query();
-        query.constrain(type);
-        return (List<T>) query.execute();
-    }
+	public static void begin() {
+	}
 
-    @SuppressWarnings("unchecked")
-    public void clear() {
-        Class<T> type = (Class<T>) getType();
-        Query q = manager.query();
-        q.constrain(type);
-        for (Object t : q.execute()) {
-            manager.delete(t);
-        }
-    }
+	public static void commit() {
+		manager.commit();
+	}
 
-    public static void begin() {
-    }
+	public static void rollback() {
+		manager.rollback();
+	}
 
-    public static void commit() {
-        manager.commit();
-    }
-
-    public static void rollback() {
-        manager.rollback();
-    }
-
-    public int generateId() {
-        return ++currentMaxId;
-    }
-    
-    public int generatObsoleteId() {
+	public int generatObsoleteId() {
 		@SuppressWarnings("unchecked")
 		Class<T> type = (Class<T>) getType(); // getting actual type class
 
@@ -103,8 +97,7 @@ public abstract class DAO<T> implements DAOInterface<T> {
 					Field attribute = type.getDeclaredField("id");
 					attribute.setAccessible(true);
 					int idMax = (Integer) attribute.get(last_object);
-					return idMax + 1; // take the object with the highest id in the database and add +1 to the new
-										// object
+					return idMax + 1; // take the object with the highest id in the database and add +1 to the new object
 
 				} catch (NoSuchFieldException e) {
 					throw new RuntimeException("Class " + type + " does not have id attribute");
@@ -114,22 +107,26 @@ public abstract class DAO<T> implements DAOInterface<T> {
 		}
 	}
 
-    @SuppressWarnings("unchecked")
-    public void initializeCurrentMaxId() {
-        Class<T> type = (Class<T>) getType();
-        Query query = manager.query();
-        query.constrain(type);
-        query.descend("id").orderDescending();
-        List<T> results = query.execute();
-        if (!results.isEmpty()) {
-            try {
-                T lastObject = results.get(0);
-                Field attribute = type.getDeclaredField("id");
-                attribute.setAccessible(true);
-                currentMaxId = (Integer) attribute.get(lastObject);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException("Unable to access id attribute of class " + type, e);
-            }
-        }
-    }
+	public int generateId() {
+		return ++currentMaxId;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void initializeCurrentMaxId() {
+		Class<T> type = (Class<T>) getType();
+		Query query = manager.query();
+		query.constrain(type);
+		query.descend("id").orderDescending();
+		List<T> results = query.execute();
+		if (!results.isEmpty()) {
+			try {
+				T lastObject = results.get(0);
+				Field attribute = type.getDeclaredField("id");
+				attribute.setAccessible(true);
+				currentMaxId = (Integer) attribute.get(lastObject);
+			} catch (NoSuchFieldException | IllegalAccessException e) {
+				throw new RuntimeException("Unable to access id attribute of class " + type, e);
+			}
+		}
+	}
 }

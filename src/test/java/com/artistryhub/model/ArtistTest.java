@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.artistryhub.dao.DAO;
 import com.artistryhub.dao.DAOArtist;
-import com.artistryhub.service.Facade;
 
 
 public class ArtistTest {
@@ -42,6 +40,14 @@ public class ArtistTest {
 		for(Object aux: result) {
 			System.out.println(aux);
 		}
+		DAO.close();
+	}
+	
+	@Test
+    public void delete(){
+		DAO.open();
+		Artist result = daoArtist.read(1);
+		daoArtist.delete(result);
 		DAO.close();
 	}
 	
