@@ -11,24 +11,33 @@ public class DAOArtist extends DAO<Artist> {
 
 	@Override
 	public Artist read(Object key) {
-		String keyStr = key.toString();
-		Query query = manager.query();
-		query.constrain(Artist.class);
-		if (keyStr.matches("\\d+")) {
-			Integer id = Integer.parseInt(keyStr);
-			query.descend("id").constrain(id);
-		} else if (keyStr.matches("[a-zA-Z\\s]+")) {
+	    List<Artist> result = queryArtist(key);
+	    if (result.size() > 0) {
+	        return result.get(0);
+	    } else {
+	        return null;
+	    }
+	}
+	
+	private List<Artist> queryArtist(Object key) {
+	    String keyStr = key.toString();
+	    Query query = manager.query();
+	    query.constrain(Artist.class);
+	    
+	    if (keyStr.matches("\\d+")) {
+	        Integer id = Integer.parseInt(keyStr);
+	        query.descend("id").constrain(id);
+	    } else if (keyStr.matches("[a-zA-Z\\s]+")) {
+	        query.descend("name").constrain(keyStr);
+	    } else {
+	        throw new CustomException("Invalid key. The id must contain only numbers and the name only letters.",
+	                ExceptionCode.INVALID_KEY);
+	    }
+	    
+	    return query.execute();
+	}
 
-			query.descend("name").constrain(keyStr);
-		} else {
-			throw new CustomException("Invalid key. The id must contain only numbers and the name only letters.",
-					ExceptionCode.INVALID_KEY);
-		}
-		List<Artist> result = query.execute();
-		if (result.size() > 0) {
-			return result.get(0);
-		} else {
-			return null;
-		}
+	public List<Artist> readUpdates(Object key) {
+	    return queryArtist(key);
 	}
 }

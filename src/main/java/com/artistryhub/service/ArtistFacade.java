@@ -154,37 +154,75 @@ public class ArtistFacade {
         return deletedArtist;
     }
 
-    public Artist update(Artist updateArtist) {
-    	DAO.begin();
-        // If something goes wrong, exceptions will be thrown
-        this.validateName(updateArtist.getName());
-        this.validateType(updateArtist.getType());
-        this.validateBiography(updateArtist.getBiography());
+    public Artist update(Artist updateArtist, String attribute, Object newValue) {
+        DAO.begin();
+        
+        switch(attribute) {
+            case "name":
+                if (!updateArtist.getName().equals(newValue)) { 
+                    if (newValue instanceof String) {
+                        this.validateName((String) newValue);
+                        if (DAOMainManager.read(newValue) != null) {
+                            throw new CustomException("There is already an artist with this name.", ExceptionCode.UNIQUENESS_VIOLATION);
+                        }
+                        updateArtist.setName((String) newValue);
+                    } else {
+                        throw new CustomException("Invalid type for name.", ExceptionCode.INVALID_TYPE);
+                    }
+                }
+                break;
+                
+            case "biography":
+                if (!updateArtist.getBiography().equals(newValue)) { 
+                    if (newValue instanceof String) {
+                        this.validateBiography((String) newValue);
+                        updateArtist.setBiography((String) newValue);
+                    } else {
+                        throw new CustomException("Invalid type for biography.", ExceptionCode.INVALID_TYPE);
+                    }
+                }
+                break;
+                
+            case "type":
+                if (!updateArtist.getType().equals(newValue)) {
+                    if (newValue instanceof ArrayList<?>) {
+                        ArrayList<?> tempList = (ArrayList<?>) newValue;
+                        boolean allStrings = true;
 
-        // Check if the name is unique
-        if (updateArtist.getName().length() > MIN_NAME) {
-            if (DAOMainManager.read(updateArtist.getName()) != null) {
-                throw new CustomException("Uniqueness violated, the name must be unique", ExceptionCode.UNIQUENESS_VIOLATION);
-            }
-        }
-        // Check if the ID is unique or generate a new one
-        if (updateArtist.getId() > 0) {
-            if (DAOMainManager.read(updateArtist.getId()) != null) {
-                throw new CustomException("Uniqueness violated, the id must be unique", ExceptionCode.UNIQUENESS_VIOLATION);
-            }
-        } else {
-            int newId = DAOMainManager.generatObsoleteId();
-            updateArtist.setId(newId);
+                        for (Object obj : tempList) {
+                            if (!(obj instanceof String)) {
+                                allStrings = false;
+                                break;
+                            }
+                        }
+
+                        if (allStrings) {
+                            @SuppressWarnings("unchecked")
+                            ArrayList<String> newType = (ArrayList<String>) tempList;
+                            this.validateType(newType);
+                            updateArtist.setType(newType);
+                        } else {
+                            throw new CustomException("Invalid type for elements in type list.", ExceptionCode.INVALID_TYPE);
+                        }
+                    } else {
+                        throw new CustomException("Invalid type for type.", ExceptionCode.INVALID_TYPE);
+                    }
+                }
+                break;
+                
+            default:
+                throw new CustomException("Attribute invalid.", ExceptionCode.ATTRIBUTE_INVALID);
         }
 
-        DAOMainManager.create(updateArtist);
+        DAOMainManager.update(updateArtist);
         DAO.commit();
         return updateArtist;
     }
 
-    public Artist search(Object key) {
 
-        return null;
+
+    public Artist search(Object key) {
+        return DAOMainManager.read(key);
     }
 
     public void clear() {

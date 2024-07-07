@@ -39,14 +39,8 @@ public class ArtistFacadeTest {
 
 		assertEquals(artist4, facade.create("Kendrick Lamar", new ArrayList<String>(List.of("rip rop")),
 				"Kendrick Lamar Duckworth, mais conhecido como Kendrick Lamar, é um rapper, compositor e produtor musical, vencedor de 17 prêmios Grammy e único músico fora da música clássica e de jazz a receber"));
-		List<Artist> artists = facade.getAll();
-		if (artists.isEmpty())
-			System.out.println("Is Empty");
-		else {
-			for (Artist artist : artists) {
-				System.out.println(artist);
-			}
-		}
+		this.showDataArtists();
+		
 		facade.clear();
 		facade.finish();
 	}
@@ -61,14 +55,8 @@ public class ArtistFacadeTest {
 		assertEquals(artist3, artist3);
 		assertEquals(artist4, artist4);
 
-		List<Artist> artists = facade.getAll();
-		if (artists.isEmpty())
-			System.out.println("Is Empty");
-		else {
-			for (Artist artist : artists) {
-				System.out.println(artist);
-			}
-		}
+		this.showDataArtists();
+		
 		facade.clear();
 		facade.finish();
 	}
@@ -97,6 +85,11 @@ public class ArtistFacadeTest {
 		assertEquals(artist3, artist3);
 		assertEquals(artist4, artist4);
 
+		this.showDataArtists();
+		
+		facade.finish();
+	}
+	private void showDataArtists() {
 		List<Artist> artists = facade.getAll();
 		if (artists.isEmpty())
 			System.out.println("Is Empty");
@@ -105,7 +98,6 @@ public class ArtistFacadeTest {
 				System.out.println(artist);
 			}
 		}
-		facade.finish();
 	}
 
 	@Test
@@ -125,14 +117,8 @@ public class ArtistFacadeTest {
 						new ArrayList<String>(Arrays.asList("rip rop", "romcance", "contry", "rock", "pop")),
 						"Little bay-lookin' boy So bay, I can barely say it with a straight face, lookin' boy"))
 				.matches(ex -> ex.getExceptionCode() == ExceptionCode.INVALID_TYPE);
-		List<Artist> artists = facade.getAll();
-		if (artists.isEmpty())
-			System.out.println("Is Empty");
-		else {
-			for (Artist artist : artists) {
-				System.out.println(artist);
-			}
-		}
+		this.showDataArtists();
+		
 		facade.clear();
 		facade.finish();
 	}
@@ -164,6 +150,7 @@ public class ArtistFacadeTest {
 		facade.finish();
 
 	}
+	
 
 	@Test
 	public void artistSearchTest() {
@@ -172,7 +159,17 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistUpdateTest() {
-
+		facade.initialize();
+		facade.clear();
+		facade.create("Paulo Cavalo Silva", new ArrayList<String>(List.of("rip rop")), "sadasddjidhsadasjdajdsakldjsadjaskdajdaksdja");
+		facade.create(artist2);
+	
+		this.showDataArtists();
+		Artist aux = facade.search(1);
+		facade.update(aux,"name","Fernando Mendes");
+		
+		System.out.println("========");
+		this.showDataArtists();
+		facade.finish();
 	}
-
 }
