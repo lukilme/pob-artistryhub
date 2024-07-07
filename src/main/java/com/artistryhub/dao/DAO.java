@@ -3,9 +3,11 @@ package com.artistryhub.dao;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
 import com.db4o.query.Query;
 
 public abstract class DAO<T> implements DAOInterface<T> {
@@ -58,6 +60,25 @@ public abstract class DAO<T> implements DAOInterface<T> {
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<T> readAll(int pageNumber, int pageSize) {
+		manager.ext().purge();
+		Class<T> type = (Class<T>) getType();
+		Query query = manager.query();
+		query.constrain(type);
+
+		ObjectSet<T> result = query.execute();
+
+		int offset = (pageNumber - 1) * pageSize;
+
+		if (offset >= result.size()) {
+			return new ArrayList<>();
+		}
+
+		int end = Math.min(offset + pageSize, result.size());
+		return result.subList(offset, end);
+	}
+
+	@SuppressWarnings("unchecked")
 	public void clear() {
 		Class<T> type = (Class<T>) getType();
 		Query q = manager.query();
@@ -97,7 +118,8 @@ public abstract class DAO<T> implements DAOInterface<T> {
 					Field attribute = type.getDeclaredField("id");
 					attribute.setAccessible(true);
 					int idMax = (Integer) attribute.get(last_object);
-					return idMax + 1; // take the object with the highest id in the database and add +1 to the new object
+					return idMax + 1; // take the object with the highest id in the database and add +1 to the new
+										// object
 
 				} catch (NoSuchFieldException e) {
 					throw new RuntimeException("Class " + type + " does not have id attribute");

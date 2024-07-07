@@ -6,7 +6,8 @@ public enum ExceptionCode {
     INVALID_TYPE(103),
     INVALID_BIOGRAPHY(104),
 	INVALID_KEY(105),
-	UNIQUENESS_VIOLATION(106);
+	UNIQUENESS_VIOLATION(106),
+	ARTIST_NOT_FOUND(107);
 
     private final int code;
 
