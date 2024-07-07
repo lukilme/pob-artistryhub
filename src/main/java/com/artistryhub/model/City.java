@@ -64,5 +64,15 @@ public class City {
 	public void setPresentations(List<Presentation> presentations) {
 		this.presentations = presentations;
 	}
+	
+	public void addPresentation(Presentation presentation) {
+    	this.presentations.add(presentation);
+    }
+    
+    public void removePresentation(Presentation presentation) {
+    	this.presentations.remove(presentation);
+    }
+	
+	
 
 }

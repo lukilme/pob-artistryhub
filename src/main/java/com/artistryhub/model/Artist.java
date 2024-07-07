@@ -4,103 +4,99 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Artist {
-	private int id;
-	private String name;
-	private ArrayList<Presentation> presentations;
-	private ArrayList<String> type;
-	private String biography;
+    private int id;
+    private String name;
+    private ArrayList<Presentation> presentations;
+    private ArrayList<String> type;
+    private String biography;
 
-	public Artist() {
-		super();
-	}
+    public Artist() {
+        super();
+    }
 
-	public Artist(int id, String name, ArrayList<Presentation> presentations, ArrayList<String> type, String biography) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.presentations = presentations;
-		this.type = type;
-		this.biography = biography;
-	}
+    public Artist(int id, String name, ArrayList<Presentation> presentations, ArrayList<String> type, String biography) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.presentations = presentations;
+        this.type = type;
+        this.biography = biography;
+    }
 
-	@Override
-	public String toString() {
-		return "Artist [id=" + id + ", name=" + name + ", presentations=" + presentations + ", type=" + type
-				+ ", biography=" + biography + "]";
-	}
+    @Override
+    public String toString() {
+        return "Artist [id=" + id + ", name=" + name + ", presentations=" + presentations + ", type=" + type + ", biography=" + biography + "]";
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(biography, id, name, presentations, type);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(biography, id, name, presentations, type);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Artist other = (Artist) obj;
-		return Objects.equals(biography, other.biography) && id == other.id && Objects.equals(name, other.name)
-				&& Objects.equals(presentations, other.presentations) && Objects.equals(type, other.type);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Artist other = (Artist) obj;
+        return Objects.equals(biography, other.biography) && id == other.id && Objects.equals(name, other.name) && Objects.equals(presentations, other.presentations) && Objects.equals(type, other.type);
+    }
 
-	public void add(Presentation newPresentation) {
-		this.presentations.add(newPresentation);
-	}
+  
+    public void addType(String newType) {
+        this.type.add(newType);
+    }
 
-	public void remove(Presentation removedPresentation) {
-		this.presentations.remove(removedPresentation);
-	}
+    public void removeType(String removedType) {
+        this.type.remove(removedType);
+    }
 
-	public void add(String newType) {
-		this.type.add(newType);
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void remove(String removedType) {
-		this.type.remove(removedType);
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public ArrayList<Presentation> getPresentations() {
+        return presentations;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setPresentations(ArrayList<Presentation> presentations) {
+        this.presentations = presentations;
+    }
+    
+    public void addPresentation(Presentation presentation) {
+    	this.presentations.add(presentation);
+    }
+    
+    public void removePresentation(Presentation presentation) {
+    	this.presentations.remove(presentation);
+    }
 
-	public ArrayList<Presentation> getPresentations() {
-		return presentations;
-	}
+    public ArrayList<String> getType() {
+        return type;
+    }
 
-	public void setPresentations(ArrayList<Presentation> presentations) {
-		this.presentations = presentations;
-	}
+    public void setType(ArrayList<String> type) {
+        this.type = type;
+    }
 
-	public ArrayList<String> getType() {
-		return type;
-	}
+    public String getBiography() {
+        return biography;
+    }
 
-	public void setType(ArrayList<String> type) {
-		this.type = type;
-	}
-
-	public String getBiography() {
-		return biography;
-	}
-
-	public void setBiography(String biography) {
-		this.biography = biography;
-	}
+    public void setBiography(String biography) {
+        this.biography = biography;
+    }
 
 }

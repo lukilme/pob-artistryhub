@@ -1,154 +1,151 @@
 package com.artistryhub.dao;
 
+import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
+import com.db4o.query.Query;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.db4o.ObjectContainer;
-import com.db4o.ObjectSet;
-import com.db4o.query.Query;
-
 public abstract class DAO<T> implements DAOInterface<T> {
-	protected static ObjectContainer manager;
-	protected static int currentMaxId = 1;
-	@SuppressWarnings("unused")
-	private Class<?> type;
+    protected static ObjectContainer manager;
+    protected static int currentMaxId = 1;
+    @SuppressWarnings("unused")
+    private Class<?> type;
 
-	protected Class<?> getType() {
-		Type genericSuperclass = getClass().getGenericSuperclass();
-		if (genericSuperclass instanceof ParameterizedType) {
-			Type[] actualTypeArguments = ((ParameterizedType) genericSuperclass).getActualTypeArguments();
-			if (actualTypeArguments.length > 0 && actualTypeArguments[0] instanceof Class) {
-				return (Class<?>) actualTypeArguments[0];
-			}
-		}
-		throw new IllegalArgumentException("Unable to determine type argument.");
-	}
+    public static void open() {
+        manager = Utility.connectDataBase();
+    }
 
-	public static void open() {
-		manager = Utility.connectDataBase();
-	}
+    public static void close() {
+        Utility.disconnect();
+    }
 
-	public static void close() {
-		Utility.disconnect();
-	}
+    public static void begin() {
+    }
 
-	public void create(T obj) {
-		manager.store(obj);
-	}
+    public static void commit() {
+        manager.commit();
+    }
 
-	public T update(T obj) {
-		manager.store(obj);
-		return obj;
-	}
+    public static void rollback() {
+        manager.rollback();
+    }
 
-	public abstract T read(Object key);
+    protected Class<?> getType() {
+        Type genericSuperclass = getClass().getGenericSuperclass();
+        if (genericSuperclass instanceof ParameterizedType) {
+            Type[] actualTypeArguments = ((ParameterizedType) genericSuperclass).getActualTypeArguments();
+            if (actualTypeArguments.length > 0 && actualTypeArguments[0] instanceof Class) {
+                return (Class<?>) actualTypeArguments[0];
+            }
+        }
+        throw new IllegalArgumentException("Unable to determine type argument.");
+    }
 
-	public void delete(T obj) {
-		manager.delete(obj);
-	}
+    public void create(T obj) {
+        manager.store(obj);
+    }
 
-	@SuppressWarnings("unchecked")
-	public List<T> readAll() {
-		manager.ext().purge();
-		Class<T> type = (Class<T>) getType();
-		Query query = manager.query();
-		query.constrain(type);
-		return (List<T>) query.execute();
-	}
+    public T update(T obj) {
+        manager.store(obj);
+        return obj;
+    }
 
-	@SuppressWarnings("unchecked")
-	public List<T> readAll(int pageNumber, int pageSize) {
-		manager.ext().purge();
-		Class<T> type = (Class<T>) getType();
-		Query query = manager.query();
-		query.constrain(type);
+    public abstract T read(Object key);
 
-		ObjectSet<T> result = query.execute();
+    public void delete(T obj) {
+        manager.delete(obj);
+    }
 
-		int offset = (pageNumber - 1) * pageSize;
+    @SuppressWarnings("unchecked")
+    public List<T> readAll() {
+        manager.ext().purge();
+        Class<T> type = (Class<T>) getType();
+        Query query = manager.query();
+        query.constrain(type);
+        return (List<T>) query.execute();
+    }
 
-		if (offset >= result.size()) {
-			return new ArrayList<>();
-		}
+    @SuppressWarnings("unchecked")
+    public List<T> readAll(int pageNumber, int pageSize) {
+        manager.ext().purge();
+        Class<T> type = (Class<T>) getType();
+        Query query = manager.query();
+        query.constrain(type);
 
-		int end = Math.min(offset + pageSize, result.size());
-		return result.subList(offset, end);
-	}
+        ObjectSet<T> result = query.execute();
 
-	@SuppressWarnings("unchecked")
-	public void clear() {
-		Class<T> type = (Class<T>) getType();
-		Query q = manager.query();
-		q.constrain(type);
-		for (Object t : q.execute()) {
-			manager.delete(t);
-		}
-	}
+        int offset = (pageNumber - 1) * pageSize;
 
-	public static void begin() {
-	}
+        if (offset >= result.size()) {
+            return new ArrayList<>();
+        }
 
-	public static void commit() {
-		manager.commit();
-	}
+        int end = Math.min(offset + pageSize, result.size());
+        return result.subList(offset, end);
+    }
 
-	public static void rollback() {
-		manager.rollback();
-	}
+    @SuppressWarnings("unchecked")
+    public void clear() {
+        Class<T> type = (Class<T>) getType();
+        Query q = manager.query();
+        q.constrain(type);
+        for (Object t : q.execute()) {
+            manager.delete(t);
+        }
+    }
 
-	public int generatObsoleteId() {
-		@SuppressWarnings("unchecked")
-		Class<T> type = (Class<T>) getType(); // getting actual type class
+    public int generatObsoleteId() {
+        @SuppressWarnings("unchecked") Class<T> type = (Class<T>) getType(); // getting actual type class
 
-		if (manager.query(type).size() == 0) {
-			return 1; // if the database is empty return the first generated id.
-		} else {
-			Query query = manager.query();
-			query.constrain(type);
-			query.descend("id").orderDescending();
-			List<T> results = query.execute();
-			if (results.isEmpty())
-				return 1; // if the database is empty return the first generated id again.
-			else
-				try {
-					T last_object = results.get(0);
-					Field attribute = type.getDeclaredField("id");
-					attribute.setAccessible(true);
-					int idMax = (Integer) attribute.get(last_object);
-					return idMax + 1; // take the object with the highest id in the database and add +1 to the new
-										// object
+        if (manager.query(type).size() == 0) {
+            return 1; // if the database is empty return the first generated id.
+        } else {
+            Query query = manager.query();
+            query.constrain(type);
+            query.descend("id").orderDescending();
+            List<T> results = query.execute();
+            if (results.isEmpty()) return 1; // if the database is empty return the first generated id again.
+            else try {
+                T last_object = results.get(0);
+                Field attribute = type.getDeclaredField("id");
+                attribute.setAccessible(true);
+                int idMax = (Integer) attribute.get(last_object);
+                return idMax + 1; // take the object with the highest id in the database and add +1 to the new
+                // object
 
-				} catch (NoSuchFieldException e) {
-					throw new RuntimeException("Class " + type + " does not have id attribute");
-				} catch (IllegalAccessException e) {
-					throw new RuntimeException("Unable to access id attribute of class " + type);
-				}
-		}
-	}
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException("Class " + type + " does not have id attribute");
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Unable to access id attribute of class " + type);
+            }
+        }
+    }
 
-	public int generateId() {
-		return ++currentMaxId;
-	}
+    public int generateId() {
+        return ++currentMaxId;
+    }
 
-	@SuppressWarnings("unchecked")
-	public void initializeCurrentMaxId() {
-		Class<T> type = (Class<T>) getType();
-		Query query = manager.query();
-		query.constrain(type);
-		query.descend("id").orderDescending();
-		List<T> results = query.execute();
-		if (!results.isEmpty()) {
-			try {
-				T lastObject = results.get(0);
-				Field attribute = type.getDeclaredField("id");
-				attribute.setAccessible(true);
-				currentMaxId = (Integer) attribute.get(lastObject);
-			} catch (NoSuchFieldException | IllegalAccessException e) {
-				throw new RuntimeException("Unable to access id attribute of class " + type, e);
-			}
-		}
-	}
+    @SuppressWarnings("unchecked")
+    public void initializeCurrentMaxId() {
+        Class<T> type = (Class<T>) getType();
+        Query query = manager.query();
+        query.constrain(type);
+        query.descend("id").orderDescending();
+        List<T> results = query.execute();
+        if (!results.isEmpty()) {
+            try {
+                T lastObject = results.get(0);
+                Field attribute = type.getDeclaredField("id");
+                attribute.setAccessible(true);
+                currentMaxId = (Integer) attribute.get(lastObject);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException("Unable to access id attribute of class " + type, e);
+            }
+        }
+    }
 }

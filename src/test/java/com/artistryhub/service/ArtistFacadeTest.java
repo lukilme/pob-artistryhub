@@ -1,14 +1,13 @@
 package com.artistryhub.service;
 
+import com.artistryhub.exception.CustomException;
+import com.artistryhub.exception.ExceptionCode;
+import com.artistryhub.model.Artist;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import com.artistryhub.exception.ExceptionCode;
-import com.artistryhub.exception.CustomException;
-import com.artistryhub.model.Artist;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,13 +20,9 @@ public class ArtistFacadeTest {
 			"Luiz Fernando Mendes Ferreira, conhecido como Fernando Mendes, é um cantor e compositor brasileiro. Destacou-se durante a década de 1970, com discos que vendeu mais de um milhão de cópias,presente nas rádios de todo o país.");
 	Artist artist3 = new Artist(3, "Laura Brehm", null, new ArrayList<String>(Arrays.asList("eletronic", "pop")),
 			"Laura Brehm vive e respira música. Aos 33 anos ela se tornou conhecida como cantora eletrônica");
-	Artist artist4 = new Artist(4, "Kendrick Lamar", null, new ArrayList<String>(Arrays.asList("rip rop")),
+	Artist artist4 = new Artist(4, "Kendrick Lamar", null, new ArrayList<String>(List.of("rip rop")),
 			"Kendrick Lamar Duckworth, mais conhecido como Kendrick Lamar, é um rapper, compositor e produtor musical, vencedor de 17 prêmios Grammy e único músico fora da música clássica e de jazz a receber");
-
-	public void restoreDataForTesting() {
-
-	}
-
+	
 	@Test
 	public void artistCreationTest() {
 		facade.initialize();
@@ -39,10 +34,10 @@ public class ArtistFacadeTest {
 		assertEquals(artist2, facade.create("Fernando Mendes", new ArrayList<String>(Arrays.asList("MPB", "romance")),
 				"Luiz Fernando Mendes Ferreira, conhecido como Fernando Mendes, é um cantor e compositor brasileiro. Destacou-se durante a década de 1970, com discos que vendeu mais de um milhão de cópias,presente nas rádios de todo o país."));
 
-		assertEquals(artist3, facade.create("Laura Brehm", new ArrayList<String>(Arrays.asList("eletronic", "pop")),
+		assertEquals(artist3, facade.create("Laura Brehm", new ArrayList<String>(Arrays.asList("electronic", "pop")),
 				"Laura Brehm vive e respira música. Aos 33 anos ela se tornou conhecida como cantora eletrônica"));
 
-		assertEquals(artist4, facade.create("Kendrick Lamar", new ArrayList<String>(Arrays.asList("rip rop")),
+		assertEquals(artist4, facade.create("Kendrick Lamar", new ArrayList<String>(List.of("rip rop")),
 				"Kendrick Lamar Duckworth, mais conhecido como Kendrick Lamar, é um rapper, compositor e produtor musical, vencedor de 17 prêmios Grammy e único músico fora da música clássica e de jazz a receber"));
 		List<Artist> artists = facade.getAll();
 		if (artists.isEmpty())
@@ -93,7 +88,7 @@ public class ArtistFacadeTest {
 		Artist artist3 = new Artist(3, "Laura Brehm", null,
 				new ArrayList<String>(Arrays.asList("eletronic", "pop", "rock", "romance", "folk")),
 				"Laura Brehm vive e respira música. Aos 33 anos ela se tornou conhecida como cantora eletrônica");
-		Artist artist4 = new Artist(4, "Kendrick Lamar", null, new ArrayList<String>(Arrays.asList("rip rop")),
+		Artist artist4 = new Artist(4, "Kendrick Lamar", null, new ArrayList<String>(List.of("rip rop")),
 				"Drake's Father");
 
 		System.out.println("\nartistCreationTestExceptionInstanced");
@@ -119,14 +114,12 @@ public class ArtistFacadeTest {
 		facade.clear();
 		System.out.println("\nartistCreationTestException");
 		assertThatExceptionOfType(CustomException.class)
-				.isThrownBy(() -> facade.create("2Pac", new ArrayList<String>(Arrays.asList("rip rop")),
+				.isThrownBy(() -> facade.create("2Pac", new ArrayList<String>(List.of("rip rop")),
 						"Rapper morto na base da bala. Era um suposto inimigo do NotoriusBig"))
 				.matches(ex -> ex.getExceptionCode() == ExceptionCode.INVALID_NAME);
-
-		assertThatExceptionOfType(CustomException.class).isThrownBy(
-				() -> facade.create("Leno Brega", new ArrayList<String>(Arrays.asList("romance")), "Ele cantava"))
+		assertThatExceptionOfType(CustomException.class)
+				.isThrownBy(() -> facade.create("Leno Brega", new ArrayList<String>(List.of("romance")), "Ele cantava"))
 				.matches(ex -> ex.getExceptionCode() == ExceptionCode.INVALID_BIOGRAPHY);
-
 		assertThatExceptionOfType(CustomException.class)
 				.isThrownBy(() -> facade.create("Phil collins",
 						new ArrayList<String>(Arrays.asList("rip rop", "romcance", "contry", "rock", "pop")),
@@ -143,6 +136,7 @@ public class ArtistFacadeTest {
 		facade.clear();
 		facade.finish();
 	}
+
 	public void insertForTesting() {
 		facade.create(artist1);
 		facade.create(artist2);
@@ -168,7 +162,7 @@ public class ArtistFacadeTest {
 			}
 		}
 		facade.finish();
-		
+
 	}
 
 	@Test

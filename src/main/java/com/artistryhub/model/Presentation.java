@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class Presentation {
 
+	private int id;
 	private LocalDate date;
 	private Artist artist;
 	private City city;
@@ -29,15 +30,18 @@ public class Presentation {
 		this.ticketsTotal = ticketsTotal;
 	}
 
+	
+
 	@Override
 	public String toString() {
-		return "Presentation [ date=" + date + ", artist=" + artist + ", city=" + city + ", priceTicket=" + priceTicket
-				+ ", duration=" + duration + ", ticketsSold=" + ticketsSold + ", ticketsTotal=" + ticketsTotal + "]";
+		return "Presentation [id=" + id + ", date=" + date + ", artist=" + artist + ", city=" + city + ", priceTicket="
+				+ priceTicket + ", duration=" + duration + ", ticketsSold=" + ticketsSold + ", ticketsTotal="
+				+ ticketsTotal + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(artist, city);
+		return Objects.hash(artist, city, date);
 	}
 
 	@Override
@@ -49,7 +53,16 @@ public class Presentation {
 		if (getClass() != obj.getClass())
 			return false;
 		Presentation other = (Presentation) obj;
-		return Objects.equals(artist, other.artist) && Objects.equals(city, other.city);
+		return Objects.equals(artist, other.artist) && Objects.equals(city, other.city)
+				&& Objects.equals(date, other.date);
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public LocalDate getDate() {
