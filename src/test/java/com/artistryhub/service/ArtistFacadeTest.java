@@ -40,7 +40,6 @@ public class ArtistFacadeTest {
 		assertEquals(artist4, facade.create("Kendrick Lamar", new ArrayList<String>(List.of("rip rop")),
 				"Kendrick Lamar Duckworth, mais conhecido como Kendrick Lamar, é um rapper, compositor e produtor musical, vencedor de 17 prêmios Grammy e único músico fora da música clássica e de jazz a receber"));
 		this.showDataArtists();
-		
 		facade.clear();
 		facade.finish();
 	}
