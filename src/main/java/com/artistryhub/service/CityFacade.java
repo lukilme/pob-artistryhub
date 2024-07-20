@@ -1,6 +1,5 @@
 package com.artistryhub.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -10,43 +9,39 @@ import com.artistryhub.dao.DAOCity;
 import com.artistryhub.dao.DAOPresentation;
 import com.artistryhub.exception.CustomException;
 import com.artistryhub.exception.ExceptionCode;
-import com.artistryhub.model.Artist;
+import com.artistryhub.model.City;
 
 public class CityFacade {
 	private static final int MIN_NAME = 4;
 	private static final int MAX_NAME = 32;
-	
-	protected DAOArtist DAOMainManager;
+
+	protected DAOArtist DAOArtist;
 	protected DAOPresentation DAOPresentation;
-	protected DAOCity DAOCity;
-	
+	protected DAOCity DAOMainManager;
+
 	public void initialize(DAOArtist DAOArtistic, DAOPresentation DAOPresentation, DAOCity DAOCity) {
-		this.DAOMainManager = DAOArtistic;
+		this.DAOArtist = DAOArtistic;
 		this.DAOPresentation = DAOPresentation;
-		this.DAOCity = DAOCity;
+		this.DAOMainManager = DAOCity;
 		DAO.open();
 	}
+
 	public void finish() {
 		DAO.close();
 	}
+
 	/**
 	 * This method creates a new artist instance and saves it to the database if it
 	 * complies with the business rules.
 	 *
-	 * @param name      Unique name of the artist.
-	 * @param type      Category the artist falls into.
-	 * @param biography Artist's story.
-	 * @return The created instance of the artist.
+	 * @param name Unique name of the city.
+	 * @return The created instance of the city.
 	 * @throws CustomException with ExceptionCode.INVALID_NAME if the name is
 	 *                         invalid or are not unique.
-	 * @throws CustomException with ExceptionCode.INVALID_TYPE if the type is
-	 *                         invalid.
-	 * @throws CustomException with ExceptionCode.INVALID_BIOGRAPHY if the biography
-	 *                         is invalid.
 	 * @throws CustomException with ExceptionCode.UNIQUENESS_VIOLATION if name or id
 	 *                         are not unique.
 	 */
-	public Artist create(String name, ArrayList<String> type, String biography) {
+	public City create(String name) {
 		DAO.begin();
 		// if something goes wrong, exceptions will be thrown
 		this.validateName(name);
@@ -54,20 +49,51 @@ public class CityFacade {
 		if (DAOMainManager.read(name) != null) {
 			throw new CustomException("Uniqueness violated, the id or name must be unique",
 					ExceptionCode.UNIQUENESS_VIOLATION);
+			// Check if the name is unique
 		}
 		int newId = DAOMainManager.generatObsoleteId();
-		Artist newArtist = new Artist(newId, name, null, type, biography);
-		DAOMainManager.create(newArtist);
+		City newCity = new City(newId, name, null);
+		DAOMainManager.create(newCity);
 		DAO.commit();
-		return newArtist;
+		return newCity;
 	}
 	
-	public List<Artist> getAll() {
+	/**
+	 * This method creates a new artist instance and saves it to the database if it
+	 * complies with the business rules.
+	 *
+	 * @param newCity Unique name of the city.
+	 * @return The created instance of the city.
+	 * @throws CustomException with ExceptionCode.INVALID_NAME if the name is
+	 *                         invalid or are not unique.
+	 * @throws CustomException with ExceptionCode.UNIQUENESS_VIOLATION if name or id
+	 *                         are not unique.
+	 */
+	public City create(City newCity) {
+		DAO.begin();
+		// if something goes wrong, exceptions will be thrown
+		this.validateName(newCity.getName());
+		//check if the name is unique
+		if (DAOMainManager.read(newCity.getName()) != null) {
+			throw new CustomException("Uniqueness violated, the name must be unique",
+					ExceptionCode.UNIQUENESS_VIOLATION);
+		
+		}
+		if (DAOMainManager.read(newCity.getId()) != null) {
+			throw new CustomException("Uniqueness violated, the id must be unique",
+					ExceptionCode.UNIQUENESS_VIOLATION);
+		}
 
-		List<Artist> result = DAOMainManager.readAll();
+		DAOMainManager.create(newCity);
+		DAO.commit();
+		return newCity;
+	}
+
+	public List<City> getAll() {
+		List<City> result = DAOMainManager.readAll();
 		return result;
 	}
-	
+
 	/**
 	 * This method analyzes whether the name has the appropriate size according to
 	 * business rules.
@@ -81,9 +107,8 @@ public class CityFacade {
 	 */
 	public void validateName(String name) {
 		if (name == null || !Pattern.matches("^[a-zA-Z ]{4,32}$", name)) {
-			throw new CustomException("Name must contain only letters and spaces, and be between "
-					+ CityFacade.MIN_NAME + " and " + CityFacade.MAX_NAME + " characters.",
-					ExceptionCode.INVALID_NAME);
+			throw new CustomException("Name must contain only letters and spaces, and be between " + CityFacade.MIN_NAME
+					+ " and " + CityFacade.MAX_NAME + " characters.", ExceptionCode.INVALID_NAME);
 		}
 	}
 }

@@ -1,24 +1,20 @@
 package com.artistryhub.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import com.artistryhub.dao.DAO;
-import com.artistryhub.dao.DAOArtist;
+import com.artistryhub.dao.DAOCity;
 
-
-public class ArtistTest {
-	private static DAOArtist daoArtist = new DAOArtist(); 
-	
+public class CityTest {
+	private static DAOCity dao = new DAOCity();
 	@Test
     public void addTest(){
 		DAO.open();
 		DAO.begin();
-		Artist artist = new Artist(1, "Katy Perry", null, new ArrayList<String>(Arrays.asList("rock", "pop")), "artist who sings and does things");
-		daoArtist.create(artist);
+		City newCity = new City(1, "João Pessoa", null);
+		dao.create(newCity);
 		DAO.commit();
 		DAO.close();
     }
@@ -27,7 +23,7 @@ public class ArtistTest {
     public void get(){
 		DAO.open();
 		//Artist artist = new Artist(1, "Katy Perry", null, new ArrayList<String>(Arrays.asList("rock", "pop")), "artist who sings and does things");
-		Artist result = daoArtist.read(1);
+		City result = dao.read(1);
 		System.out.println(result);
 		DAO.close();  
     }
@@ -35,7 +31,7 @@ public class ArtistTest {
 	@Test
     public void getAll(){
 		DAO.open();
-		List<Artist> result = daoArtist.readAll();
+		List<City> result = dao.readAll();
 		for(Object aux: result) {
 			System.out.println(aux);
 		}
@@ -45,20 +41,19 @@ public class ArtistTest {
 	@Test
     public void delete(){
 		DAO.open();
-		Artist artist = new Artist(1, "Katy Perry", null, new ArrayList<String>(Arrays.asList("rock", "pop")), "artist who sings and does things");
-		daoArtist.create(artist);
-		Artist result = daoArtist.read(1);
-		daoArtist.delete(result);
+		City newCity = new City(1, "João Pessoa", null);
+		dao.create(newCity);
+		City result = dao.read(1);
+		System.out.println(result);
+		dao.delete(result);
 		DAO.close();
 	}
 	
 	@Test
     public void clear(){
 		DAO.open();
-		daoArtist.clear();
+		dao.clear();
 		DAO.close();  
 	}
 	
-	
-   
 }
