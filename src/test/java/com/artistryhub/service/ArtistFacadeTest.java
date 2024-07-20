@@ -1,5 +1,8 @@
 package com.artistryhub.service;
 
+import com.artistryhub.dao.DAOArtist;
+import com.artistryhub.dao.DAOCity;
+import com.artistryhub.dao.DAOPresentation;
 import com.artistryhub.exception.CustomException;
 import com.artistryhub.exception.ExceptionCode;
 import com.artistryhub.model.Artist;
@@ -13,7 +16,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ArtistFacadeTest {
-	public ArtistFacade facade = new ArtistFacade();
+	private DAOArtist DAOArtistic = new DAOArtist();
+	private DAOPresentation DAOPresentation = new DAOPresentation();
+	private DAOCity DAOCity = new DAOCity();
+	private ArtistFacade facade = new ArtistFacade();
 	Artist artist1 = new Artist(1, "Roberto Carlos", null, new ArrayList<String>(Arrays.asList("MPB", "romance")),
 			"Roberto Carlos Braga OMC é um cantor, compositor e empresário brasileiro. Foi considerado pela revista Rolling Stone Brasil como o 6.º maior artista da história da música brasileira.");
 	Artist artist2 = new Artist(2, "Fernando Mendes", null, new ArrayList<String>(Arrays.asList("MPB", "romance")),
@@ -25,7 +31,7 @@ public class ArtistFacadeTest {
 	
 	@Test
 	public void artistCreationTest() {
-		facade.initialize();
+		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
 		facade.clear();
 		System.out.println("\nartistCreationTest");
 		assertEquals(artist1, facade.create("Roberto Carlos", new ArrayList<String>(Arrays.asList("MPB", "romance")),
@@ -46,7 +52,7 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistCreationTestInstanced() {
-		facade.initialize();
+		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
 		facade.clear();
 		System.out.println("\nartistCreationTestInstanced");
 		assertEquals(artist1, artist1);
@@ -62,7 +68,7 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistCreationTestExceptionInstanced() {
-		facade.initialize();
+		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
 		facade.clear();
 		Artist artist0 = new Artist(1, "Roberto Carlos", null, new ArrayList<String>(Arrays.asList("MPB", "romance")),
 				"Roberto Carlos Braga OMC é um cantor, compositor e empresário brasileiro. Foi considerado pela revista Rolling Stone Brasil como o 6.º maior artista da história da música brasileira.");
@@ -101,7 +107,7 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistCreationTestException() {
-		facade.initialize();
+		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
 		facade.clear();
 		System.out.println("\nartistCreationTestException");
 		assertThatExceptionOfType(CustomException.class)
@@ -131,7 +137,7 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistRemovalTest() {
-		facade.initialize();
+		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
 		this.insertForTesting();
 		System.out.println("\nartistRemovalTest");
 		facade.delete(artist1);
@@ -158,7 +164,7 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistUpdateTest() {
-		facade.initialize();
+		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
 		facade.clear();
 		facade.create("Paulo Cavalo Silva", new ArrayList<String>(List.of("rip rop")), "sadasddjidhsadasjdajdsakldjsadjaskdajdaksdja");
 		facade.create(artist2);
