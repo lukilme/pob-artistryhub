@@ -40,7 +40,7 @@ public class ArtistFacadeTest {
 		assertEquals(artist2, facade.create("Fernando Mendes", new ArrayList<String>(Arrays.asList("MPB", "romance")),
 				"Luiz Fernando Mendes Ferreira, conhecido como Fernando Mendes, é um cantor e compositor brasileiro. Destacou-se durante a década de 1970, com discos que vendeu mais de um milhão de cópias,presente nas rádios de todo o país."));
 
-		assertEquals(artist3, facade.create("Laura Brehm", new ArrayList<String>(Arrays.asList("electronic", "pop")),
+		assertEquals(artist3, facade.create("Laura Brehm", new ArrayList<String>(Arrays.asList("eletronic", "pop")),
 				"Laura Brehm vive e respira música. Aos 33 anos ela se tornou conhecida como cantora eletrônica"));
 
 		assertEquals(artist4, facade.create("Kendrick Lamar", new ArrayList<String>(List.of("rip rop")),
@@ -138,6 +138,7 @@ public class ArtistFacadeTest {
 	@Test
 	public void artistRemovalTest() {
 		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
+		facade.clear();
 		this.insertForTesting();
 		System.out.println("\nartistRemovalTest");
 		facade.delete(artist1);
@@ -156,7 +157,6 @@ public class ArtistFacadeTest {
 
 	}
 	
-
 	@Test
 	public void artistSearchTest() {
 
@@ -171,7 +171,7 @@ public class ArtistFacadeTest {
 	
 		this.showDataArtists();
 		Artist aux = facade.search(1);
-		facade.update(aux,"name","Fernando Mendes");
+		facade.update(aux,"name","Fernando Guedes");
 		
 		System.out.println("========");
 		this.showDataArtists();

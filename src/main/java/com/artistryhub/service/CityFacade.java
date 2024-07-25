@@ -1,5 +1,6 @@
 package com.artistryhub.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -9,7 +10,9 @@ import com.artistryhub.dao.DAOCity;
 import com.artistryhub.dao.DAOPresentation;
 import com.artistryhub.exception.CustomException;
 import com.artistryhub.exception.ExceptionCode;
+import com.artistryhub.model.Artist;
 import com.artistryhub.model.City;
+import com.artistryhub.model.Presentation;
 
 public class CityFacade {
 	private static final int MIN_NAME = 4;
@@ -93,6 +96,7 @@ public class CityFacade {
 		List<City> result = DAOMainManager.readAll();
 		return result;
 	}
+	
 
 	/**
 	 * This method analyzes whether the name has the appropriate size according to
@@ -111,4 +115,48 @@ public class CityFacade {
 					+ " and " + CityFacade.MAX_NAME + " characters.", ExceptionCode.INVALID_NAME);
 		}
 	}
+	public City search(Object key) {
+		return DAOMainManager.read(key);
+	}
+	
+	public City delete(Object key) {
+		DAO.open();
+		
+		DAO.begin();
+		City deletedCity = null;
+		if (key instanceof City) {
+			deletedCity = DAOMainManager.read(((City) key).getId());
+		} else {
+			deletedCity = DAOMainManager.read(key);
+		}
+
+		if (deletedCity == null) {
+			throw new CustomException("Artist not found.", ExceptionCode.ARTIST_NOT_FOUND);
+		}
+
+		ArrayList<Presentation> cityPresentations = deletedCity.getPresentations();
+		
+		if (cityPresentations != null) {
+			for (Presentation cityPresentation : cityPresentations) {
+				City cityRemovedPresentation = cityPresentation.getCity();
+				
+				cityRemovedPresentation.removePresentation(cityPresentation);
+				deletedCity.removePresentation(cityPresentation);
+
+				DAOMainManager.update(cityRemovedPresentation);
+				DAOPresentation.delete(cityPresentation);
+			}
+		}
+
+		DAOMainManager.delete(deletedCity);
+		DAO.commit();
+
+		return deletedCity;
+	}
+	
+	public void clear() {
+		DAOMainManager.clear();
+	}
+
+	
 }

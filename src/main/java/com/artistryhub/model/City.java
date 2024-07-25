@@ -1,18 +1,18 @@
 package com.artistryhub.model;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class City {
 	private int id;
 	private String name;
-	private List<Presentation> presentations;
+	private ArrayList<Presentation> presentations;
 
 	public City() {
 		super();
 	}
 
-	public City(int id, String name, List<Presentation> presentations) {
+	public City(int id, String name, ArrayList<Presentation> presentations) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -57,11 +57,11 @@ public class City {
 		this.name = name;
 	}
 
-	public List<Presentation> getPresentations() {
+	public ArrayList<Presentation> getPresentations() {
 		return presentations;
 	}
 
-	public void setPresentations(List<Presentation> presentations) {
+	public void setPresentations(ArrayList<Presentation> presentations) {
 		this.presentations = presentations;
 	}
 	

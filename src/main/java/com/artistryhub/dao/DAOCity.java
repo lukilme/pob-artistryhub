@@ -33,7 +33,6 @@ public class DAOCity extends DAO<City> {
 			throw new CustomException("Invalid key. The id must contain only numbers and the name only letters.",
 					ExceptionCode.INVALID_KEY);
 		}
-
 		return query.execute();
 	}
 

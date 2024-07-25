@@ -72,7 +72,6 @@ public class ArtistFacade {
 	}
 
 	public List<Artist> getAll() {
-
 		List<Artist> result = DAOMainManager.readAll();
 		return result;
 	}
@@ -129,22 +128,25 @@ public class ArtistFacade {
 	}
 
 	public Artist delete(Object key) {
+
+		
+		DAO.open();
+	
 		DAO.begin();
 		Artist deletedArtist = null;
+		if (key instanceof Artist) {
+			deletedArtist = DAOMainManager.read(((Artist) key).getId());
+		} else {
+			deletedArtist = DAOMainManager.read(key);
+		}
 
-		try {
-			if (key instanceof Artist) {
-				deletedArtist = DAOMainManager.read(((Artist) key).getId());
-			} else {
-				deletedArtist = DAOMainManager.read(key);
-			}
+		if (deletedArtist == null) {
+			throw new CustomException("Artist not found.", ExceptionCode.ARTIST_NOT_FOUND);
+		}
 
-			if (deletedArtist == null) {
-				throw new CustomException("Artist not found.", ExceptionCode.ARTIST_NOT_FOUND);
-			}
-
-			ArrayList<Presentation> artistPresentations = deletedArtist.getPresentations();
-
+		ArrayList<Presentation> artistPresentations = deletedArtist.getPresentations();
+		
+		if (artistPresentations != null) {
 			for (Presentation artistPresentation : artistPresentations) {
 				City cityRemovedPresentation = artistPresentation.getCity();
 
@@ -154,17 +156,13 @@ public class ArtistFacade {
 				DAOCity.update(cityRemovedPresentation);
 				DAOPresentation.delete(artistPresentation);
 			}
-
-			DAOMainManager.delete(deletedArtist);
-			DAO.commit();
-
-			return deletedArtist;
-		} catch (Exception e) {
-			DAO.rollback();
-			throw e;
-		} finally {
-			DAO.close();
 		}
+
+		DAOMainManager.delete(deletedArtist);
+		DAO.commit();
+
+		return deletedArtist;
+
 	}
 
 	public Artist update(Artist updateArtist, String attribute, Object newValue) {

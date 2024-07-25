@@ -1,67 +1,68 @@
-# Documentação do Programa Java
-[Link text](./page1.md)
-## Visão Geral
+<div align="center">
 
-Este projeto é um exemplo de aplicação Java que demonstra a funcionalidade básica de um utilitário de saída para o terminal com formatação personalizada. O objetivo é fornecer uma ferramenta simples para imprimir mensagens formatadas no console.
+# ArtistryHub 🎉
 
-## Estrutura do Projeto
+</div>
 
-O projeto é composto pelos seguintes pacotes e classes:
+## Story Telling 🎭
 
-- **`com.example.util`**
-- **`ConsoleFormatter.java`**: Classe responsável pela formatação da saída no console.
-- **`Main.java`**: Classe principal que contém o método `main` e demonstra o uso do `ConsoleFormatter`.
 
-## Dependências
+## Description:
+ Project carried out for the object persistence course using the Java language. The general idea being to create an information system, with the theme 'Presentation of artist'.
 
-- Java 17 ou superior
+## Functional Requirements 📝
 
-## Instalação
+**F1-** Quais as apresentações na data D
 
-1. Clone o repositório:
-    ```bash
-    git clone https://github.com/usuario/projeto-java.git
-    ```
+**F2-** Quais os artistas que vao se apresentar na cidade de nome X na data D
 
-2. Navegue até o diretório do projeto:
-    ```bash
-    cd projeto-java
-    ```
+**F3-** Quais os artistas que tem mais de N apresentações
 
-3. Compile o projeto:
-    ```bash
-    javac -d bin src/com/example/util/*.java src/Main.java
-    ```
+**F4-** 
 
-## Uso
+**F5-** stuffs.
 
-Para executar o programa e ver a formatação personalizada, siga os passos abaixo:
+**F6-** stuffs.
 
-1. Navegue até o diretório `bin`:
-    ```bash
-    cd bin
-    ```
+## Folder Structure 📂
 
-2. Execute a classe principal:
-    ```bash
-    java com.example.util.Main
-    ```
+    artistryhub
+    ├── lib
+    │   └──db4o library ->
+    ├── src     
+    │   ├── view
+    │   ├── main  
+    │   │
+    │   │
+    │   │
+    │   │
+    │   │
+    │   │
+    │   │
+    │   │
+    │   │
+    ├── test                
+    └── pom.xml
 
-## Exemplo de Código
+## Dependencies
 
-### `ConsoleFormatter.java`
+Objetivo
+Praticar os conceitos de persistência transparente de objetos, através do
+desenvolvimento de um sistema de informação, usando arquitetura em camadas, banco
+de objetos db4o e padrão DAO.
 
-```java
-package com.example.util;
-
-public class ConsoleFormatter {
-
-    public static void printBold(String message) {
-        System.out.println("\033[1m" + message + "\033[0m");
-    }
-
-    public static void printItalic(String message) {
-        System.out.println("\033[3m" + message + "\033[0m");
-    }
-}
-```
+Tarefas:
+- (1pt) Implementar as classes do modelo de negócio para o tema fornecido
+- (1pt) Implementar as classes DAO específicas para as classes de negócio,
+incluindo os métodos read() as 3 consultas do tema escolhido. Configurar o
+banco com a classe Util.
+- (2pt) Implementar na classe Fachada requisitos de criar, alterar, excluir e listar
+de cada classe de negócio bem como as regras de negócio
+- (1pt) Implementar as aplicações console:
+- Cadastrar.java - cadastrar vários objetos do modelo de negócio
+- Listar.java – listar todos os objetos cadastrados
+- Consultar.java – listar as 3 consultas do tema
+- (1pt) Implementar as aplicações gráficas – uma tela para cada classe de negócio
+e uma tela para as 3 consultas.
+- (4pt) Apresentar o projeto
+Obs: A apresentação é obrigatória para cada aluno ter nota

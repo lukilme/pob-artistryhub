@@ -30,7 +30,7 @@ public class Artist {
 
     @Override
     public int hashCode() {
-        return Objects.hash(biography, id, name, presentations, type);
+        return Objects.hash(id, name);
     }
 
     @Override

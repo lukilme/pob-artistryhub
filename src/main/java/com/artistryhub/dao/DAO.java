@@ -13,15 +13,22 @@ import java.util.List;
 public abstract class DAO<T> implements DAOInterface<T> {
     protected static ObjectContainer manager;
     protected static int currentMaxId = 1;
+    private static boolean isOpen = false;
     @SuppressWarnings("unused")
     private Class<?> type;
 
     public static void open() {
         manager = Utility.connectDataBase();
+    
+    }
+    
+    public static boolean isOpen() {
+    	return isOpen;    
     }
 
     public static void close() {
         Utility.disconnect();
+        isOpen = false;
     }
 
     public static void begin() {
