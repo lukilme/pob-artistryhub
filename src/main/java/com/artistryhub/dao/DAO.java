@@ -109,7 +109,7 @@ public abstract class DAO<T> implements DAOInterface<T> {
     public int generatObsoleteId() {
         @SuppressWarnings("unchecked") Class<T> type = (Class<T>) getType(); // getting actual type class
 
-        if (manager.query(type).size() == 0) {
+        if (manager.query(type).isEmpty()) {
             return 1; // if the database is empty return the first generated id.
         } else {
             Query query = manager.query();
@@ -146,7 +146,7 @@ public abstract class DAO<T> implements DAOInterface<T> {
         List<T> results = query.execute();
         if (!results.isEmpty()) {
             try {
-                T lastObject = results.get(0);
+                T lastObject = results.getFirst();
                 Field attribute = type.getDeclaredField("id");
                 attribute.setAccessible(true);
                 currentMaxId = (Integer) attribute.get(lastObject);

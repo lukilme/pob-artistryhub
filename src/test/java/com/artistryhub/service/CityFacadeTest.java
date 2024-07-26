@@ -1,6 +1,5 @@
 package com.artistryhub.service;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -13,10 +12,10 @@ import com.artistryhub.dao.DAOPresentation;
 import com.artistryhub.model.City;
 
 public class CityFacadeTest {
-	private DAOArtist DAOArtistic = new DAOArtist();
-	private DAOPresentation DAOPresentation = new DAOPresentation();
-	private DAOCity DAOCity = new DAOCity();
-	private CityFacade facade = new CityFacade();
+	private final DAOArtist DAOArtistic = new DAOArtist();
+	private final DAOPresentation DAOPresentation = new DAOPresentation();
+	private final DAOCity DAOCity = new DAOCity();
+	private final CityFacade facade = new CityFacade();
 	City city1 = new City(1, "Joao Pessoa", null);
 	City city2 = new City(2, "Campina Grande", null);
 	City city3 = new City(3, "Belo Horizonte", null);
@@ -24,7 +23,7 @@ public class CityFacadeTest {
 
 	@Test
 	public void artistCreationTest() {
-		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
+		facade.initialize(DAOArtistic, DAOCity, DAOPresentation);
 		facade.clear();
 		System.out.println("\nartistCreationTest");
 		assertEquals(city1, facade.create("Joao Pessoa"));
@@ -37,7 +36,7 @@ public class CityFacadeTest {
 	}
 
 	private void showDataArtists() {
-		List<City> cities = facade.getAll();
+		List<City> cities = facade.readAll();
 		if (cities.isEmpty())
 			System.out.println("Is Empty");
 		else {
@@ -56,7 +55,7 @@ public class CityFacadeTest {
 
 	@Test
 	public void artistRemovalTest() {
-		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
+		facade.initialize(DAOArtistic, DAOCity, DAOPresentation);
 		facade.clear();
 		this.insertForTesting();
 		System.out.println("\nartistRemovalTest");
@@ -64,7 +63,7 @@ public class CityFacadeTest {
 		facade.delete(city2.getName());
 		facade.delete(city3.getId());
 		facade.delete(city4);
-		List<City> cities = facade.getAll();
+		List<City> cities = facade.readAll();
 		if (cities.isEmpty())
 			System.out.println("Is Empty");
 		else {

@@ -1,12 +1,15 @@
 package com.artistryhub.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import com.artistryhub.dao.DAOArtist;
 import com.artistryhub.dao.DAOCity;
 import com.artistryhub.dao.DAOPresentation;
 import com.artistryhub.exception.CustomException;
 import com.artistryhub.exception.ExceptionCode;
 import com.artistryhub.model.Artist;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +19,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ArtistFacadeTest {
+	
 	private DAOArtist DAOArtistic = new DAOArtist();
 	private DAOPresentation DAOPresentation = new DAOPresentation();
 	private DAOCity DAOCity = new DAOCity();
 	private ArtistFacade facade = new ArtistFacade();
+	
 	Artist artist1 = new Artist(1, "Roberto Carlos", null, new ArrayList<String>(Arrays.asList("MPB", "romance")),
 			"Roberto Carlos Braga OMC é um cantor, compositor e empresário brasileiro. Foi considerado pela revista Rolling Stone Brasil como o 6.º maior artista da história da música brasileira.");
 	Artist artist2 = new Artist(2, "Fernando Mendes", null, new ArrayList<String>(Arrays.asList("MPB", "romance")),
@@ -28,10 +33,10 @@ public class ArtistFacadeTest {
 			"Laura Brehm vive e respira música. Aos 33 anos ela se tornou conhecida como cantora eletrônica");
 	Artist artist4 = new Artist(4, "Kendrick Lamar", null, new ArrayList<String>(List.of("rip rop")),
 			"Kendrick Lamar Duckworth, mais conhecido como Kendrick Lamar, é um rapper, compositor e produtor musical, vencedor de 17 prêmios Grammy e único músico fora da música clássica e de jazz a receber");
-	
+
 	@Test
 	public void artistCreationTest() {
-		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
+		facade.initialize(DAOArtistic,  DAOCity, DAOPresentation);
 		facade.clear();
 		System.out.println("\nartistCreationTest");
 		assertEquals(artist1, facade.create("Roberto Carlos", new ArrayList<String>(Arrays.asList("MPB", "romance")),
@@ -52,23 +57,20 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistCreationTestInstanced() {
-		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
+		facade.initialize(DAOArtistic, DAOCity, DAOPresentation);
 		facade.clear();
 		System.out.println("\nartistCreationTestInstanced");
-		assertEquals(artist1, artist1);
-		assertEquals(artist2, artist2);
-		assertEquals(artist3, artist3);
-		assertEquals(artist4, artist4);
+		assertEquals(artist1, facade.create(artist1));
 
 		this.showDataArtists();
-		
+
 		facade.clear();
 		facade.finish();
 	}
 
 	@Test
 	public void artistCreationTestExceptionInstanced() {
-		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
+		facade.initialize(DAOArtistic, DAOCity, DAOPresentation);
 		facade.clear();
 		Artist artist0 = new Artist(1, "Roberto Carlos", null, new ArrayList<String>(Arrays.asList("MPB", "romance")),
 				"Roberto Carlos Braga OMC é um cantor, compositor e empresário brasileiro. Foi considerado pela revista Rolling Stone Brasil como o 6.º maior artista da história da música brasileira.");
@@ -91,11 +93,12 @@ public class ArtistFacadeTest {
 		assertEquals(artist4, artist4);
 
 		this.showDataArtists();
-		
+
 		facade.finish();
 	}
+
 	private void showDataArtists() {
-		List<Artist> artists = facade.getAll();
+		List<Artist> artists = facade.readAll();
 		if (artists.isEmpty())
 			System.out.println("Is Empty");
 		else {
@@ -107,7 +110,7 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistCreationTestException() {
-		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
+		facade.initialize(DAOArtistic, DAOCity, DAOPresentation);
 		facade.clear();
 		System.out.println("\nartistCreationTestException");
 		assertThatExceptionOfType(CustomException.class)
@@ -123,7 +126,7 @@ public class ArtistFacadeTest {
 						"Little bay-lookin' boy So bay, I can barely say it with a straight face, lookin' boy"))
 				.matches(ex -> ex.getExceptionCode() == ExceptionCode.INVALID_TYPE);
 		this.showDataArtists();
-		
+
 		facade.clear();
 		facade.finish();
 	}
@@ -137,7 +140,7 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistRemovalTest() {
-		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
+		facade.initialize(DAOArtistic, DAOCity, DAOPresentation);
 		facade.clear();
 		this.insertForTesting();
 		System.out.println("\nartistRemovalTest");
@@ -145,7 +148,7 @@ public class ArtistFacadeTest {
 		facade.delete(artist2.getName());
 		facade.delete(artist3.getId());
 		facade.delete(artist4);
-		List<Artist> artists = facade.getAll();
+		List<Artist> artists = facade.readAll();
 		if (artists.isEmpty())
 			System.out.println("Is Empty");
 		else {
@@ -156,23 +159,21 @@ public class ArtistFacadeTest {
 		facade.finish();
 
 	}
-	
-	@Test
-	public void artistSearchTest() {
 
-	}
+
 
 	@Test
 	public void artistUpdateTest() {
-		facade.initialize(DAOArtistic, DAOPresentation, DAOCity);
+		facade.initialize(DAOArtistic, DAOCity, DAOPresentation);
 		facade.clear();
-		facade.create("Paulo Cavalo Silva", new ArrayList<String>(List.of("rip rop")), "sadasddjidhsadasjdajdsakldjsadjaskdajdaksdja");
+		facade.create("Paulo Cavalo Silva", new ArrayList<String>(List.of("rip rop")),
+				"sadasddjidhsadasjdajdsakldjsadjaskdajdaksdja");
 		facade.create(artist2);
-	
+
 		this.showDataArtists();
 		Artist aux = facade.search(1);
-		facade.update(aux,"name","Fernando Guedes");
-		
+		facade.update(aux, "name", "Fernando Guedes");
+
 		System.out.println("========");
 		this.showDataArtists();
 		facade.finish();

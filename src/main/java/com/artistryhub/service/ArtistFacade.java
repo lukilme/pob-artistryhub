@@ -1,9 +1,6 @@
 package com.artistryhub.service;
 
 import com.artistryhub.dao.DAO;
-import com.artistryhub.dao.DAOArtist;
-import com.artistryhub.dao.DAOCity;
-import com.artistryhub.dao.DAOPresentation;
 import com.artistryhub.exception.CustomException;
 import com.artistryhub.exception.ExceptionCode;
 import com.artistryhub.model.Artist;
@@ -14,27 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ArtistFacade {
+public class ArtistFacade extends AbstractFacade<Artist> {
 	private static final int MIN_NAME = 4;
 	private static final int MAX_NAME = 32;
 	private static final int MIN_BIOGRAPHY = 16;
 	private static final int MAX_BIOGRAPHY = 255;
 	private static final int MAX_TYPES = 4;
-
-	protected DAOArtist DAOMainManager;
-	protected DAOPresentation DAOPresentation;
-	protected DAOCity DAOCity;
-
-	public void initialize(DAOArtist DAOArtistic, DAOPresentation DAOPresentation, DAOCity DAOCity) {
-		this.DAOMainManager = DAOArtistic;
-		this.DAOPresentation = DAOPresentation;
-		this.DAOCity = DAOCity;
-		DAO.open();
-	}
-
-	public void finish() {
-		DAO.close();
-	}
 
 	/**
 	 * This method creates a new artist instance and saves it to the database if it
@@ -60,20 +42,19 @@ public class ArtistFacade {
 		this.validateType(type);
 		this.validateBiography(biography);
 
-		if (DAOMainManager.read(name) != null) {
+		if (DAOArtist.read(name) != null) {
 			throw new CustomException("Uniqueness violated, the id or name must be unique",
 					ExceptionCode.UNIQUENESS_VIOLATION);
 		}
-		int newId = DAOMainManager.generatObsoleteId();
+		int newId = DAOArtist.generatObsoleteId();
 		Artist newArtist = new Artist(newId, name, null, type, biography);
-		DAOMainManager.create(newArtist);
+		DAOArtist.create(newArtist);
 		DAO.commit();
 		return newArtist;
 	}
 
-	public List<Artist> getAll() {
-		List<Artist> result = DAOMainManager.readAll();
-		return result;
+	public List<Artist> readAll() {
+		return DAOArtist.readAll();
 	}
 
 	public ArrayList<Artist> getArtistPagination() {
@@ -105,7 +86,7 @@ public class ArtistFacade {
 
 		// Check if the name is unique
 		if (newArtist.getName().length() > MIN_NAME) {
-			if (DAOMainManager.read(newArtist.getName()) != null) {
+			if (DAOArtist.read(newArtist.getName()) != null) {
 				throw new CustomException("Uniqueness violated, the name must be unique",
 						ExceptionCode.UNIQUENESS_VIOLATION);
 			}
@@ -113,31 +94,29 @@ public class ArtistFacade {
 
 		// Check if the ID is unique or generate a new one
 		if (newArtist.getId() > 0) {
-			if (DAOMainManager.read(newArtist.getId()) != null) {
+			if (DAOArtist.read(newArtist.getId()) != null) {
 				throw new CustomException("Uniqueness violated, the id must be unique",
 						ExceptionCode.UNIQUENESS_VIOLATION);
 			}
 		} else {
-			int newId = DAOMainManager.generatObsoleteId();
+			int newId = DAOArtist.generatObsoleteId();
 			newArtist.setId(newId);
 		}
 
-		DAOMainManager.create(newArtist);
+		DAOArtist.create(newArtist);
 		DAO.commit();
 		return newArtist;
 	}
 
 	public Artist delete(Object key) {
-
-		
 		DAO.open();
-	
+
 		DAO.begin();
 		Artist deletedArtist = null;
 		if (key instanceof Artist) {
-			deletedArtist = DAOMainManager.read(((Artist) key).getId());
+			deletedArtist = DAOArtist.read(((Artist) key).getId());
 		} else {
-			deletedArtist = DAOMainManager.read(key);
+			deletedArtist = DAOArtist.read(key);
 		}
 
 		if (deletedArtist == null) {
@@ -145,7 +124,7 @@ public class ArtistFacade {
 		}
 
 		ArrayList<Presentation> artistPresentations = deletedArtist.getPresentations();
-		
+
 		if (artistPresentations != null) {
 			for (Presentation artistPresentation : artistPresentations) {
 				City cityRemovedPresentation = artistPresentation.getCity();
@@ -158,7 +137,7 @@ public class ArtistFacade {
 			}
 		}
 
-		DAOMainManager.delete(deletedArtist);
+		DAOArtist.delete(deletedArtist);
 		DAO.commit();
 
 		return deletedArtist;
@@ -173,7 +152,7 @@ public class ArtistFacade {
 			if (!updateArtist.getName().equals(newValue)) {
 				if (newValue instanceof String) {
 					this.validateName((String) newValue);
-					if (DAOMainManager.read(newValue) != null) {
+					if (DAOArtist.read(newValue) != null) {
 						throw new CustomException("There is already an artist with this name.",
 								ExceptionCode.UNIQUENESS_VIOLATION);
 					}
@@ -197,8 +176,7 @@ public class ArtistFacade {
 
 		case "type":
 			if (!updateArtist.getType().equals(newValue)) {
-				if (newValue instanceof ArrayList<?>) {
-					ArrayList<?> tempList = (ArrayList<?>) newValue;
+				if (newValue instanceof ArrayList<?> tempList) {
 					boolean allStrings = true;
 
 					for (Object obj : tempList) {
@@ -227,17 +205,17 @@ public class ArtistFacade {
 			throw new CustomException("Attribute invalid.", ExceptionCode.ATTRIBUTE_INVALID);
 		}
 
-		DAOMainManager.update(updateArtist);
+		DAOArtist.update(updateArtist);
 		DAO.commit();
 		return updateArtist;
 	}
 
 	public Artist search(Object key) {
-		return DAOMainManager.read(key);
+		return DAOArtist.read(key);
 	}
 
 	public void clear() {
-		DAOMainManager.clear();
+		DAOArtist.clear();
 	}
 
 	public void validateId(int id) {
@@ -251,7 +229,6 @@ public class ArtistFacade {
 	 * business rules.
 	 *
 	 * @param name content to be checked.
-	 * @return void Ensuring that the parent method continues.
 	 * @throws CustomException with ExceptionCode.MAX_NAME preventing the parent
 	 *                         method from continuing if the biography is null,
 	 *                         shorter than 4 characters or longer than 32
@@ -270,7 +247,6 @@ public class ArtistFacade {
 	 * to business rules
 	 *
 	 * @param types Content to be checked.
-	 * @return void Ensuring that the parent method continues.
 	 * @throws CustomException with ExceptionCode.MAX_TYPES preventing the parent
 	 *                         method from continuing if there are no types, or
 	 *                         there are more than 4
@@ -287,7 +263,6 @@ public class ArtistFacade {
 	 * to the business rules.
 	 *
 	 * @param biography content to be verified.
-	 * @return void Ensuring that the parent method proceeds.
 	 * @throws CustomException with ExceptionCode.INVALID_BIOGRAPHY preventing the
 	 *                         parent method from proceeding if the biography is
 	 *                         null, shorter than 16 characters, or longer than 255

@@ -5,33 +5,14 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.artistryhub.dao.DAO;
-import com.artistryhub.dao.DAOArtist;
-import com.artistryhub.dao.DAOCity;
-import com.artistryhub.dao.DAOPresentation;
 import com.artistryhub.exception.CustomException;
 import com.artistryhub.exception.ExceptionCode;
-import com.artistryhub.model.Artist;
 import com.artistryhub.model.City;
 import com.artistryhub.model.Presentation;
 
-public class CityFacade {
+public class CityFacade extends AbstractFacade<City> {
 	private static final int MIN_NAME = 4;
 	private static final int MAX_NAME = 32;
-
-	protected DAOArtist DAOArtist;
-	protected DAOPresentation DAOPresentation;
-	protected DAOCity DAOMainManager;
-
-	public void initialize(DAOArtist DAOArtistic, DAOPresentation DAOPresentation, DAOCity DAOCity) {
-		this.DAOArtist = DAOArtistic;
-		this.DAOPresentation = DAOPresentation;
-		this.DAOMainManager = DAOCity;
-		DAO.open();
-	}
-
-	public void finish() {
-		DAO.close();
-	}
 
 	/**
 	 * This method creates a new artist instance and saves it to the database if it
@@ -49,18 +30,18 @@ public class CityFacade {
 		// if something goes wrong, exceptions will be thrown
 		this.validateName(name);
 
-		if (DAOMainManager.read(name) != null) {
+		if (DAOCity.read(name) != null) {
 			throw new CustomException("Uniqueness violated, the id or name must be unique",
 					ExceptionCode.UNIQUENESS_VIOLATION);
 			// Check if the name is unique
 		}
-		int newId = DAOMainManager.generatObsoleteId();
+		int newId = DAOCity.generatObsoleteId();
 		City newCity = new City(newId, name, null);
-		DAOMainManager.create(newCity);
+		DAOCity.create(newCity);
 		DAO.commit();
 		return newCity;
 	}
-	
+
 	/**
 	 * This method creates a new artist instance and saves it to the database if it
 	 * complies with the business rules.
@@ -76,34 +57,30 @@ public class CityFacade {
 		DAO.begin();
 		// if something goes wrong, exceptions will be thrown
 		this.validateName(newCity.getName());
-		//check if the name is unique
-		if (DAOMainManager.read(newCity.getName()) != null) {
+		// check if the name is unique
+		if (DAOCity.read(newCity.getName()) != null) {
 			throw new CustomException("Uniqueness violated, the name must be unique",
 					ExceptionCode.UNIQUENESS_VIOLATION);
-		
+
 		}
-		if (DAOMainManager.read(newCity.getId()) != null) {
-			throw new CustomException("Uniqueness violated, the id must be unique",
-					ExceptionCode.UNIQUENESS_VIOLATION);
+		if (DAOCity.read(newCity.getId()) != null) {
+			throw new CustomException("Uniqueness violated, the id must be unique", ExceptionCode.UNIQUENESS_VIOLATION);
 		}
 
-		DAOMainManager.create(newCity);
+		DAOCity.create(newCity);
 		DAO.commit();
 		return newCity;
 	}
 
-	public List<City> getAll() {
-		List<City> result = DAOMainManager.readAll();
-		return result;
+	public List<City> readAll() {
+		return DAOCity.readAll();
 	}
-	
 
 	/**
 	 * This method analyzes whether the name has the appropriate size according to
 	 * business rules.
 	 *
 	 * @param name content to be checked.
-	 * @return void Ensuring that the parent method continues.
 	 * @throws CustomException with ExceptionCode.MAX_NAME preventing the parent
 	 *                         method from continuing if the biography is null,
 	 *                         shorter than 4 characters or longer than 32
@@ -115,19 +92,24 @@ public class CityFacade {
 					+ " and " + CityFacade.MAX_NAME + " characters.", ExceptionCode.INVALID_NAME);
 		}
 	}
+
 	public City search(Object key) {
-		return DAOMainManager.read(key);
+		return DAOCity.read(key);
 	}
-	
+
+	public City update(City params, String attribute, Object newValue) {
+		return null;
+	}
+
 	public City delete(Object key) {
 		DAO.open();
-		
+
 		DAO.begin();
 		City deletedCity = null;
 		if (key instanceof City) {
-			deletedCity = DAOMainManager.read(((City) key).getId());
+			deletedCity = DAOCity.read(((City) key).getId());
 		} else {
-			deletedCity = DAOMainManager.read(key);
+			deletedCity = DAOCity.read(key);
 		}
 
 		if (deletedCity == null) {
@@ -135,28 +117,27 @@ public class CityFacade {
 		}
 
 		ArrayList<Presentation> cityPresentations = deletedCity.getPresentations();
-		
+
 		if (cityPresentations != null) {
 			for (Presentation cityPresentation : cityPresentations) {
 				City cityRemovedPresentation = cityPresentation.getCity();
-				
+
 				cityRemovedPresentation.removePresentation(cityPresentation);
 				deletedCity.removePresentation(cityPresentation);
 
-				DAOMainManager.update(cityRemovedPresentation);
+				DAOCity.update(cityRemovedPresentation);
 				DAOPresentation.delete(cityPresentation);
 			}
 		}
 
-		DAOMainManager.delete(deletedCity);
+		DAOCity.delete(deletedCity);
 		DAO.commit();
 
 		return deletedCity;
 	}
-	
+
 	public void clear() {
-		DAOMainManager.clear();
+		DAOCity.clear();
 	}
 
-	
 }

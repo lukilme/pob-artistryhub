@@ -8,7 +8,8 @@ public enum ExceptionCode {
 	INVALID_KEY(105),
 	UNIQUENESS_VIOLATION(106),
 	ARTIST_NOT_FOUND(107),
-	ATTRIBUTE_INVALID(108);
+	ATTRIBUTE_INVALID(108),
+    INVALID_VALUE(109);
 
     private final int code;
 
