@@ -11,20 +11,37 @@ public class PresentationFacade extends AbstractFacade<Presentation> {
 	}
 
 	public void clear() {
-
+		DAOPresentation.clear();
 	}
+	
 
 	public Presentation create(Presentation params) {
+		
 		return null;
 	}
 
 	public Presentation update(Presentation params, String attribute, Object newValue) {
 		return null;
 	}
+	
+	public List<Presentation> getPresentationsByArtist(){
+		return null;
+		
+	}
+	
+	public List<Presentation> getPresentationsByCity(){
+		return null;
+		
+	}
+	
+	public List<Presentation> getPresentationsByCityAndArtist(){
+		return null;
+		
+	}
+	
 
 	public Presentation search(Object key) {
-		// TODO Auto-generated method stub
-		return null;
+		return DAOPresentation.read(key);
 	}
 
 	public Presentation delete(Object key) {

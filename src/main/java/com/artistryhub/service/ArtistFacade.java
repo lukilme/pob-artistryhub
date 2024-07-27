@@ -143,73 +143,45 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		return deletedArtist;
 
 	}
-
 	public Artist update(Artist updateArtist, String attribute, Object newValue) {
-		DAO.begin();
+	    if (updateArtist == null || attribute == null || newValue == null) {
+	        throw new IllegalArgumentException("Arguments cannot be null.");
+	    }
 
-		switch (attribute) {
-		case "name":
-			if (!updateArtist.getName().equals(newValue)) {
-				if (newValue instanceof String) {
-					this.validateName((String) newValue);
-					if (DAOArtist.read(newValue) != null) {
-						throw new CustomException("There is already an artist with this name.",
-								ExceptionCode.UNIQUENESS_VIOLATION);
-					}
-					updateArtist.setName((String) newValue);
-				} else {
-					throw new CustomException("Invalid type for name.", ExceptionCode.INVALID_TYPE);
-				}
-			}
-			break;
+	    DAO.begin();
 
-		case "biography":
-			if (!updateArtist.getBiography().equals(newValue)) {
-				if (newValue instanceof String) {
-					this.validateBiography((String) newValue);
-					updateArtist.setBiography((String) newValue);
-				} else {
-					throw new CustomException("Invalid type for biography.", ExceptionCode.INVALID_TYPE);
-				}
-			}
-			break;
+	    try {
+	        switch (attribute) {
+	            case "name":
+	                updateName(updateArtist, newValue);
+	                break;
 
-		case "type":
-			if (!updateArtist.getType().equals(newValue)) {
-				if (newValue instanceof ArrayList<?> tempList) {
-					boolean allStrings = true;
+	            case "biography":
+	                updateBiography(updateArtist, newValue);
+	                break;
 
-					for (Object obj : tempList) {
-						if (!(obj instanceof String)) {
-							allStrings = false;
-							break;
-						}
-					}
+	            case "type":
+	                updateType(updateArtist, newValue);
+	                break;
 
-					if (allStrings) {
-						@SuppressWarnings("unchecked")
-						ArrayList<String> newType = (ArrayList<String>) tempList;
-						this.validateType(newType);
-						updateArtist.setType(newType);
-					} else {
-						throw new CustomException("Invalid type for elements in type list.",
-								ExceptionCode.INVALID_TYPE);
-					}
-				} else {
-					throw new CustomException("Invalid type for type.", ExceptionCode.INVALID_TYPE);
-				}
-			}
-			break;
+	            default:
+	                throw new CustomException("Invalid attribute.", ExceptionCode.ATTRIBUTE_INVALID);
+	        }
 
-		default:
-			throw new CustomException("Attribute invalid.", ExceptionCode.ATTRIBUTE_INVALID);
-		}
+	        DAOArtist.update(updateArtist);
+	        DAO.commit();
+	    } catch (CustomException | IllegalArgumentException e) {
+	        DAO.rollback();
+	        throw e;
+	    } catch (Exception e) {
+	        DAO.rollback();
+	        throw new RuntimeException("An unexpected error occurred while updating the artist.", e);
+	    }
 
-		DAOArtist.update(updateArtist);
-		DAO.commit();
-		return updateArtist;
+	    return updateArtist;
 	}
 
+	
 	public Artist search(Object key) {
 		return DAOArtist.read(key);
 	}
@@ -221,6 +193,53 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 	public void validateId(int id) {
 		if (id <= 0) {
 			throw new CustomException("ID must be a positive number.", ExceptionCode.INVALID_ID);
+		}
+	}
+
+	private void updateName(Artist updateArtist, Object newValue) {
+		if (!(newValue instanceof String)) {
+			throw new CustomException("Invalid type for name.", ExceptionCode.INVALID_TYPE);
+		}
+
+		String newName = (String) newValue;
+		if (!updateArtist.getName().equals(newName)) {
+			validateName(newName);
+			if (DAOArtist.read(newName) != null) {
+				throw new CustomException("There is already an artist with this name.",
+						ExceptionCode.UNIQUENESS_VIOLATION);
+			}
+			updateArtist.setName(newName);
+		}
+	}
+
+	private void updateBiography(Artist updateArtist, Object newValue) {
+		if (!(newValue instanceof String)) {
+			throw new CustomException("Invalid type for biography.", ExceptionCode.INVALID_TYPE);
+		}
+
+		String newBiography = (String) newValue;
+		if (!updateArtist.getBiography().equals(newBiography)) {
+			validateBiography(newBiography);
+			updateArtist.setBiography(newBiography);
+		}
+	}
+
+	private void updateType(Artist updateArtist, Object newValue) {
+		if (!(newValue instanceof ArrayList<?> tempList)) {
+			throw new CustomException("Invalid type for type.", ExceptionCode.INVALID_TYPE);
+		}
+
+		for (Object obj : tempList) {
+			if (!(obj instanceof String)) {
+				throw new CustomException("Invalid type for elements in type list.", ExceptionCode.INVALID_TYPE);
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		ArrayList<String> newType = (ArrayList<String>) tempList;
+		if (!updateArtist.getType().equals(newType)) {
+			validateType(newType);
+			updateArtist.setType(newType);
 		}
 	}
 

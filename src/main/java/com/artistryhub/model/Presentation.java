@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Presentation {
-
 	private int id;
 	private LocalDate date;
 	private Artist artist;
@@ -29,8 +28,6 @@ public class Presentation {
 		this.ticketsSold = ticketsSold;
 		this.ticketsTotal = ticketsTotal;
 	}
-
-	
 
 	@Override
 	public String toString() {
