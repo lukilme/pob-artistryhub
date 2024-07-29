@@ -1,6 +1,9 @@
+
+
 <div align="end">
-<a href="./pt.md">PT</a>
+<a href="./index.md">EN</a>
 </div>
+
 
 
 <div align="center">
@@ -9,35 +12,35 @@
 
 </div>
 
- ## Description:
-Project developed for the object persistence course using the Java language. The goal is to create an information system with the theme 'Artist Presentation'.
+ ## Descrição 🗯:
+Projeto desenvolvido para o curso de persistência de objetos utilizando a linguagem Java. O objetivo é criar um sistema de informações com o tema 'Apresentação de Artista'.
 
-It is a simple application for storing and manipulating data, focused on managing artist presentations in different cities. The project involves CRUD operations (creation, reading, updating and deletion) for three main types of objects, of course, following the rules of the business model.
- ## Functional Requirements 📝
+Trata-se de uma aplicação simples para armazenamento e manipulação de dados, focada em gerenciamento de apresentações de artistas em diferentes cidades. O projeto envolve operações de CRUD (criação, leitura, atualização e exclusão) para três tipos principais de objetos, claro, seguindo as regras do modelo de negócio
+ ## Requisitos Funcionais 📝
 
-**Basic:**
+**Básico:** 
 
-**F1-** CRUD operations with the Artist object.
+**F1-** Operações CRUD com o objeto Artist.
 
-**F2-** CRUD operations with the City object.
+**F2-** Operações CRUD com o objeto City.
 
-**F3-** CRUD operations with the Apresentation object.
+**F3-** Operações CRUD com o objeto Presentation.
 
-**F4-** GUI for any object
+**F4-** GUI para cada objecto
 
-<hr>
+<hr> 
 
-**Query funcionts:**
+**Funções de consulta:** 
 
-**F4-** Which artists have the most performances.
+**F5-** Quais artistas têm mais apresentações.
 
-**F5-** Which artists perform on a specific date
+**F6-** Quais artistas se apresentam em uma data específica 
 
-**F6-** Entering the city and date, provide a list of artists that match the combination
+**F7-** Inserindo a cidade e a data, forneça uma lista de artistas que correspondem à combinação 
 
-**F7-** Show which artists performed at one in the city.
+**F8-** Mostre quais artistas se apresentaram em uma na cidade.
 
- ## Folder Structure 📂
+ ## Estrutura de diretórios 📂
 
     artistryhub
     ├── lib
@@ -73,13 +76,8 @@ It is a simple application for storing and manipulating data, focused on managin
     │   ├── main   
     └── pom.xml
 
-> [!NOTE]
-> For see more about classes : <a href="./classes.md">click here</a>
-
-
-
- ## Dependencies
-Unit testing libraries and creation of tables and graphs were introduced for better observation of the data in question.
+ ## Dependências
+Bibliotecas de testes unitários e criação de tabelas e gráficos foram introduzidas para melhor observação dos dados em questão.
 ```xml
 	<dependency>
 		<groupId>org.junit.jupiter</groupId>
@@ -100,7 +98,10 @@ Unit testing libraries and creation of tables and graphs were introduced for bet
 	</dependency>
 ```
 
- ## Teacher's rules:
+> [!NOTE]
+> Para ver mais sobre as classes : <a href="./classes.md">clique aqui</a>
+
+ ## Regras do professor:
 
 ```
 Objetivo

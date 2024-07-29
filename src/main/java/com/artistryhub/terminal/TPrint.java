@@ -28,15 +28,15 @@ public final class TPrint {
     }
     
     public static void warning(String message) {
-        System.out.println(WARNING_MESSAGE + padRight(message, 30) + " ⚠" + ANSI_RESET);
+        System.out.println(WARNING_MESSAGE + padRight(message, 50) + " ⚠" + ANSI_RESET);
     }
     
     public static void danger(String message) {
-        System.out.println(DANGER_MESSAGE + padRight(message, 30) + " ❌" + ANSI_RESET);
+        System.out.println(DANGER_MESSAGE + padRight(message, 50) + " ❌" + ANSI_RESET);
     }
     
     public static void success(String message) {
-        System.out.println(SUCCESS_MESSAGE + padRight(message, 30) + " ✔" + ANSI_RESET);
+        System.out.println(SUCCESS_MESSAGE + padRight(message, 50) + " ✔" + ANSI_RESET);
     }
     
     public static void main(String[] args) {
@@ -49,6 +49,7 @@ public final class TPrint {
         warning("This is a warning");
         danger("This is a danger");
         success("This is a success");
+		//System.out.println("██████████");
     }
 
     public static int getTerminalWidth() {
@@ -66,7 +67,7 @@ public final class TPrint {
                 e.printStackTrace();
             }
         }
-        return 80; // Default width
+        return 120; // Default width
     }
 
     public static int getTerminalHeight() {
