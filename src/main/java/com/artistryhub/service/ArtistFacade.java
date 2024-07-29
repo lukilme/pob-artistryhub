@@ -143,45 +143,26 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		return deletedArtist;
 
 	}
-	public Artist update(Artist updateArtist, String attribute, Object newValue) {
-	    if (updateArtist == null || attribute == null || newValue == null) {
-	        throw new IllegalArgumentException("Arguments cannot be null.");
+
+	public Artist update(Artist updateArtist) {
+		DAO.begin();
+		Artist oldArtist = DAOArtist.read(updateArtist.getId());
+		if(oldArtist==null) {
+			throw new CustomException("No Artist found to updated", ExceptionCode.ARTIST_NOT_FOUND);
+		}
+		if (!oldArtist.getName().equals(updateArtist.getName())) {
+	        updateName(updateArtist, updateArtist.getName());
 	    }
-
-	    DAO.begin();
-
-	    try {
-	        switch (attribute) {
-	            case "name":
-	                updateName(updateArtist, newValue);
-	                break;
-
-	            case "biography":
-	                updateBiography(updateArtist, newValue);
-	                break;
-
-	            case "type":
-	                updateType(updateArtist, newValue);
-	                break;
-
-	            default:
-	                throw new CustomException("Invalid attribute.", ExceptionCode.ATTRIBUTE_INVALID);
-	        }
-
-	        DAOArtist.update(updateArtist);
-	        DAO.commit();
-	    } catch (CustomException | IllegalArgumentException e) {
-	        DAO.rollback();
-	        throw e;
-	    } catch (Exception e) {
-	        DAO.rollback();
-	        throw new RuntimeException("An unexpected error occurred while updating the artist.", e);
+	    if (!oldArtist.getBiography().equals(updateArtist.getBiography())) {
+	        updateBiography(updateArtist, updateArtist.getBiography());
 	    }
-
-	    return updateArtist;
+	    if (!oldArtist.getType().equals(updateArtist.getType())) {
+	        updateType(updateArtist, updateArtist.getType());
+	    }
+		DAOArtist.update(updateArtist);
+		return updateArtist;
 	}
 
-	
 	public Artist search(Object key) {
 		return DAOArtist.read(key);
 	}

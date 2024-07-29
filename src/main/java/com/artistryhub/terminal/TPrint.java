@@ -36,7 +36,7 @@ public final class TPrint {
     }
     
     public static void success(String message) {
-        System.out.println(SUCCESS_MESSAGE + padRight(message, 30) + " ✔ " + ANSI_RESET);
+        System.out.println(SUCCESS_MESSAGE + padRight(message, 30) + " ✔" + ANSI_RESET);
     }
     
     public static void main(String[] args) {

@@ -30,6 +30,9 @@ abstract class AbstractFacade<T> {
 	T search(Object key) {
 		return null;
 	}
+	T update(T params) {
+		return null;
+	}
 
 	T update(T params, String attribute, Object newValue) {
 		return null;

@@ -19,12 +19,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ArtistFacadeTest {
-	
+
 	private DAOArtist DAOArtistic = new DAOArtist();
 	private DAOPresentation DAOPresentation = new DAOPresentation();
 	private DAOCity DAOCity = new DAOCity();
 	private ArtistFacade facade = new ArtistFacade();
-	
+
 	Artist artist1 = new Artist(1, "Roberto Carlos", null, new ArrayList<String>(Arrays.asList("MPB", "romance")),
 			"Roberto Carlos Braga OMC é um cantor, compositor e empresário brasileiro. Foi considerado pela revista Rolling Stone Brasil como o 6.º maior artista da história da música brasileira.");
 	Artist artist2 = new Artist(2, "Fernando Mendes", null, new ArrayList<String>(Arrays.asList("MPB", "romance")),
@@ -36,7 +36,7 @@ public class ArtistFacadeTest {
 
 	@Test
 	public void artistCreationTest() {
-		facade.initialize(DAOArtistic,  DAOCity, DAOPresentation);
+		facade.initialize(DAOArtistic, DAOCity, DAOPresentation);
 		facade.clear();
 		System.out.println("\nartistCreationTest");
 		assertEquals(artist1, facade.create("Roberto Carlos", new ArrayList<String>(Arrays.asList("MPB", "romance")),
@@ -157,10 +157,7 @@ public class ArtistFacadeTest {
 			}
 		}
 		facade.finish();
-
 	}
-
-
 
 	@Test
 	public void artistUpdateTest() {
@@ -169,12 +166,20 @@ public class ArtistFacadeTest {
 		facade.create("Paulo Cavalo Silva", new ArrayList<String>(List.of("rip rop")),
 				"sadasddjidhsadasjdajdsakldjsadjaskdajdaksdja");
 		facade.create(artist2);
-
 		this.showDataArtists();
 		Artist aux = facade.search(1);
-		facade.update(aux, "name", "Fernando Guedes");
-
+		Artist aux2 = facade.search(2);
+		ArrayList<String> listOptions = aux2.getType();
+		listOptions.add("popular");
+		listOptions.remove(0);
+		aux2.setType(listOptions);
+		aux.setName("Rodrigo SAntoro");
+		facade.update(aux);
 		System.out.println("========");
+		Artist copy = facade.search(1);
+		Artist copy2 = facade.search(2);
+		assertEquals(aux, copy);
+		assertEquals(aux2, copy2);
 		this.showDataArtists();
 		facade.finish();
 	}
