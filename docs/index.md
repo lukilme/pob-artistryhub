@@ -2,18 +2,14 @@
 <a href="./pt.md">PT</a>
 </div>
 
-
-<div align="center">
-
 ## ArtistryHub 🎉
 
-</div>
-
- ## Description:
+## Description  🗯::
 Project developed for the object persistence course using the Java language. The goal is to create an information system with the theme 'Artist Presentation'.
 
 It is a simple application for storing and manipulating data, focused on managing artist presentations in different cities. The project involves CRUD operations (creation, reading, updating and deletion) for three main types of objects, of course, following the rules of the business model.
- ## Functional Requirements 📝
+
+## Functional Requirements 📝
 
 **Basic:**
 
@@ -37,7 +33,7 @@ It is a simple application for storing and manipulating data, focused on managin
 
 **F7-** Show which artists performed at one in the city.
 
- ## Folder Structure 📂
+## Folder Structure 📂
 
     artistryhub
     ├── lib
@@ -73,12 +69,12 @@ It is a simple application for storing and manipulating data, focused on managin
     │   ├── main   
     └── pom.xml
 
-> [!NOTE]
-> For see more about classes : <a href="./classes.md">click here</a>
+> NOTE
+>
+> For see more about classes : <a href="./classes">click here</a>
 
 
-
- ## Dependencies
+## Dependencies📚:
 Unit testing libraries and creation of tables and graphs were introduced for better observation of the data in question.
 ```xml
 	<dependency>
@@ -100,28 +96,19 @@ Unit testing libraries and creation of tables and graphs were introduced for bet
 	</dependency>
 ```
 
- ## Teacher's rules:
+## Teacher's rules ❗:
 
 ```
-Objetivo
+Objective: 
+To practice the concepts of transparent persistence of objects, through the 
+development of an information system, using layered architecture, 
+db4o object database and DAO standard.
 
-Praticar os conceitos de persistência transparente de objetos, através do
-desenvolvimento de um sistema de informação, usando arquitetura em camadas, banco
-de objetos db4o e padrão DAO.
-
-Tarefas:
-- (1pt) Implementar as classes do modelo de negócio para o tema fornecido
-- (1pt) Implementar as classes DAO específicas para as classes de negócio,
-incluindo os métodos read() as 3 consultas do tema escolhido. Configurar o
-banco com a classe Util.
-- (2pt) Implementar na classe Fachada requisitos de criar, alterar, excluir e listar
-de cada classe de negócio bem como as regras de negócio
-- (1pt) Implementar as aplicações console:
-- Cadastrar.java - cadastrar vários objetos do modelo de negócio
-- Listar.java – listar todos os objetos cadastrados
-- Consultar.java – listar as 3 consultas do tema
-- (1pt) Implementar as aplicações gráficas – uma tela para cada classe de negócio
-e uma tela para as 3 consultas.
-- (4pt) Apresentar o projeto
-Obs: A apresentação é obrigatória para cada aluno ter nota
+Tasks: 
+- (1pt) Implement the business model classes for the given theme 
+- (1pt) Implement the specific DAO classes for the business classes, including the read() methods for the 3 queries of the chosen theme. Configure the database with the Util class.
+- (2pt) Implement in the Facade class the requirements for creating, altering, deleting and listing each business class, as well as the business rules 
+- (1pt) Implement the console applications: - Cadastrar.java - register several objects of the business model - Listar.java – list all registered objects - Consultar.java – list the 3 queries of the theme 
+- (1pt) Implement the graphical applications – one screen for each business class and one screen for the 3 queries. 
+- (4pt) Present the project Note: The presentation is mandatory for each student to get a grade
 ```

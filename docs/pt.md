@@ -12,11 +12,13 @@
 
 </div>
 
- ## Descrição 🗯:
+## Descrição 🗯:
+
 Projeto desenvolvido para o curso de persistência de objetos utilizando a linguagem Java. O objetivo é criar um sistema de informações com o tema 'Apresentação de Artista'.
 
 Trata-se de uma aplicação simples para armazenamento e manipulação de dados, focada em gerenciamento de apresentações de artistas em diferentes cidades. O projeto envolve operações de CRUD (criação, leitura, atualização e exclusão) para três tipos principais de objetos, claro, seguindo as regras do modelo de negócio
- ## Requisitos Funcionais 📝
+
+## Requisitos Funcionais 📝
 
 **Básico:** 
 
@@ -40,7 +42,7 @@ Trata-se de uma aplicação simples para armazenamento e manipulação de dados,
 
 **F8-** Mostre quais artistas se apresentaram em uma na cidade.
 
- ## Estrutura de diretórios 📂
+## Estrutura de diretórios 📂
 
     artistryhub
     ├── lib
@@ -76,7 +78,12 @@ Trata-se de uma aplicação simples para armazenamento e manipulação de dados,
     │   ├── main   
     └── pom.xml
 
- ## Dependências
+> NOTE
+>
+> For see more about classes : <a href="./classes">click here</a>
+
+## Dependências📚:
+
 Bibliotecas de testes unitários e criação de tabelas e gráficos foram introduzidas para melhor observação dos dados em questão.
 ```xml
 	<dependency>
@@ -98,10 +105,7 @@ Bibliotecas de testes unitários e criação de tabelas e gráficos foram introd
 	</dependency>
 ```
 
-> [!NOTE]
-> Para ver mais sobre as classes : <a href="./classes.md">clique aqui</a>
-
- ## Regras do professor:
+ ## Regras do professor ❗:
 
 ```
 Objetivo

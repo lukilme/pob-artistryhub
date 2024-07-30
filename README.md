@@ -81,23 +81,23 @@ It is a simple application for storing and manipulating data, focused on managin
  ## Dependencies
 Unit testing libraries and creation of tables and graphs were introduced for better observation of the data in question.
 ```xml
-	<dependency>
-		<groupId>org.junit.jupiter</groupId>
-		<artifactId>junit-jupiter-engine</artifactId>
-	    <version>5.8.1</version>
-	    <scope>test</scope>
-	</dependency>
-	<dependency>
-        <groupId>org.assertj</groupId>
-		<artifactId>assertj-core</artifactId>
-		<version>3.21.0</version>
-		<scope>test</scope>
-	</dependency>
-	<dependency>
-		<groupId>jfree</groupId>
-		<artifactId>jfreechart</artifactId>
-	    <version>1.0.13</version>
-	</dependency>
+<dependency>
+	<groupId>org.junit.jupiter</groupId>
+	<artifactId>junit-jupiter-engine</artifactId>
+    <version>5.8.1</version>
+	<scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.assertj</groupId>
+	<artifactId>assertj-core</artifactId>
+	<version>3.21.0</version>
+	<scope>test</scope>
+</dependency>
+<dependency>
+	<groupId>jfree</groupId>
+	<artifactId>jfreechart</artifactId>
+    <version>1.0.13</version>
+</dependency>
 ```
 
  ## Teacher's rules:
