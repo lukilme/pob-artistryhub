@@ -15,10 +15,10 @@ public class CityFacadeTest {
 	private final DAOPresentation DAOPresentation = new DAOPresentation();
 	private final DAOCity DAOCity = new DAOCity();
 	private final CityFacade facade = new CityFacade();
-	City city1 = new City(1, "Joao Pessoa", null);
-	City city2 = new City(2, "Campina Grande", null);
-	City city3 = new City(3, "Belo Horizonte", null);
-	City city4 = new City(4, "Sao Paulo", null);
+	City city1 = new City(1, "Joao Pessoa");
+	City city2 = new City(2, "Campina Grande");
+	City city3 = new City(3, "Belo Horizonte");
+	City city4 = new City(4, "Sao Paulo");
 
 	@Test
 	public void artistCreationTest() {
@@ -30,7 +30,6 @@ public class CityFacadeTest {
 		assertEquals(city3, facade.create("Belo Horizonte"));
 		assertEquals(city4, facade.create("Sao Paulo"));
 		this.showDataArtists();
-		facade.clear();
 		facade.finish();
 	}
 

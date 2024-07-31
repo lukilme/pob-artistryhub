@@ -14,12 +14,11 @@ public class Presentation {
 	private int ticketsTotal;
 
 	public Presentation() {
-		super();
+	
 	}
 
 	public Presentation(LocalDate date, Artist artist, City city, double priceTicket, int duration, int ticketsSold,
 			int ticketsTotal) {
-		super();
 		this.date = date;
 		this.artist = artist;
 		this.city = city;

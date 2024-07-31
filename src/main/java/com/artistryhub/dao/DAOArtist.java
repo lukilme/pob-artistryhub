@@ -48,37 +48,4 @@ public class DAOArtist extends DAO<Artist> {
 		}
 		return query.execute();
 	}
-
-	/**
-	 * Updates the given artist instance in the database. If the artist instance
-	 * already exists in the database, it will be updated with the new values. If
-	 * the artist does not exist, it will be added as a new record.
-	 * 
-	 * @param updatedArtist The artist instance with updated information that will
-	 *                      be stored in the database.
-	 * 
-	 * @return The updated artist instance that was stored in the database.
-	 */
-	@Override
-	public Artist update(Artist updatedArtist) {
-		manager.store(updatedArtist);
-		return updatedArtist;
-	}
-
-	/**
-	 * Deletes the specified artist instance from the database.
-	 * 
-	 * This method removes the artist object that matches the given instance from
-	 * the database. If the artist does not exist in the database, no action is
-	 * taken.
-	 * 
-	 * @param deletedArtist The artist instance to be removed from the database.
-	 *                      This instance must be the same as the one stored in the
-	 *                      database, including its identity and state.
-	 */
-	@Override
-	public void delete(Artist deletedArtist) {
-		manager.delete(deletedArtist);
-	}
-
 }

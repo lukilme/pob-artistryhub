@@ -1,8 +1,8 @@
 <div align="end">
-<a href="./pt.md">PT</a>
+<a href="./pt">PT</a>
 </div>
 
-## ArtistryHub 🎉
+# ArtistryHub 🎉
 
 ## Description  🗯::
 Project developed for the object persistence course using the Java language. The goal is to create an information system with the theme 'Artist Presentation'.
@@ -23,7 +23,7 @@ It is a simple application for storing and manipulating data, focused on managin
 
 <hr>
 
-**Query funcionts:**
+**Functional queries:**
 
 **F4-** Which artists have the most performances.
 
@@ -98,7 +98,6 @@ Unit testing libraries and creation of tables and graphs were introduced for bet
 
 ## Teacher's rules ❗:
 
-```
 Objective: 
 To practice the concepts of transparent persistence of objects, through the 
 development of an information system, using layered architecture, 
@@ -111,4 +110,3 @@ Tasks:
 - (1pt) Implement the console applications: - Cadastrar.java - register several objects of the business model - Listar.java – list all registered objects - Consultar.java – list the 3 queries of the theme 
 - (1pt) Implement the graphical applications – one screen for each business class and one screen for the 3 queries. 
 - (4pt) Present the project Note: The presentation is mandatory for each student to get a grade
-```

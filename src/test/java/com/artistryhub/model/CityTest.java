@@ -13,7 +13,7 @@ public class CityTest {
     public void addTest(){
 		DAO.open();
 		DAO.begin();
-		City newCity = new City(1, "João Pessoa", null);
+		City newCity = new City(1, "João Pessoa");
 		dao.create(newCity);
 		DAO.commit();
 		DAO.close();
@@ -41,7 +41,7 @@ public class CityTest {
 	@Test
     public void delete(){
 		DAO.open();
-		City newCity = new City(1, "João Pessoa", null);
+		City newCity = new City(1, "João Pessoa");
 		dao.create(newCity);
 		City result = dao.read(1);
 		System.out.println(result);

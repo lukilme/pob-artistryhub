@@ -19,7 +19,6 @@ public abstract class DAO<T> implements DAOInterface<T> {
 
     public static void open() {
         manager = Utility.connectDataBase();
-    
     }
     
     public static boolean isOpen() {

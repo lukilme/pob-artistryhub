@@ -47,7 +47,7 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 					ExceptionCode.UNIQUENESS_VIOLATION);
 		}
 		int newId = DAOArtist.generatObsoleteId();
-		Artist newArtist = new Artist(newId, name, null, type, biography);
+		Artist newArtist = new Artist(newId, name, type, biography);
 		DAOArtist.create(newArtist);
 		DAO.commit();
 		return newArtist;
@@ -85,31 +85,25 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		this.validateBiography(newArtist.getBiography());
 
 		// Check if the name is unique
-		if (newArtist.getName().length() > MIN_NAME) {
-			if (DAOArtist.read(newArtist.getName()) != null) {
-				throw new CustomException("Uniqueness violated, the name must be unique",
-						ExceptionCode.UNIQUENESS_VIOLATION);
-			}
+
+		if (DAOArtist.read(newArtist.getName()) != null) {
+			throw new CustomException("Uniqueness violated, the name must be unique",
+					ExceptionCode.UNIQUENESS_VIOLATION);
 		}
 
 		// Check if the ID is unique or generate a new one
-		if (newArtist.getId() > 0) {
+		if (newArtist.getId() != 0) {
 			if (DAOArtist.read(newArtist.getId()) != null) {
 				throw new CustomException("Uniqueness violated, the id must be unique",
 						ExceptionCode.UNIQUENESS_VIOLATION);
 			}
-		} else {
-			int newId = DAOArtist.generatObsoleteId();
-			newArtist.setId(newId);
 		}
-
 		DAOArtist.create(newArtist);
 		DAO.commit();
 		return newArtist;
 	}
 
 	public Artist delete(Object key) {
-		DAO.open();
 
 		DAO.begin();
 		Artist deletedArtist = null;
@@ -147,24 +141,44 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 	public Artist update(Artist updateArtist) {
 		DAO.begin();
 		Artist oldArtist = DAOArtist.read(updateArtist.getId());
-		if(oldArtist==null) {
+		if (oldArtist == null) {
 			throw new CustomException("No Artist found to updated", ExceptionCode.ARTIST_NOT_FOUND);
 		}
 		if (!oldArtist.getName().equals(updateArtist.getName())) {
-	        updateName(updateArtist, updateArtist.getName());
-	    }
-	    if (!oldArtist.getBiography().equals(updateArtist.getBiography())) {
-	        updateBiography(updateArtist, updateArtist.getBiography());
-	    }
-	    if (!oldArtist.getType().equals(updateArtist.getType())) {
-	        updateType(updateArtist, updateArtist.getType());
-	    }
+			updateName(updateArtist, updateArtist.getName());
+		}
+		if (!oldArtist.getBiography().equals(updateArtist.getBiography())) {
+			updateBiography(updateArtist, updateArtist.getBiography());
+		}
+		if (!oldArtist.getType().equals(updateArtist.getType())) {
+			updateType(updateArtist, updateArtist.getType());
+		}
 		DAOArtist.update(updateArtist);
 		return updateArtist;
 	}
 
 	public Artist search(Object key) {
-		return DAOArtist.read(key);
+		if (key instanceof String) {
+			String keyString = (String) key;
+			if (keyString.matches("\\d+")) {
+				return DAOArtist.read(Integer.parseInt(keyString));
+			} else if (keyString.matches("[a-zA-Z\\s]+")) {
+				return DAOArtist.read(key);
+			} else {
+				throw new CustomException("Invalid key. The id must contain only numbers and the name only letters.",
+						ExceptionCode.INVALID_KEY);
+			}
+		} else if (key instanceof Integer) {
+			validateId((int) key);
+			return DAOArtist.read(key);
+		} else if (key instanceof Artist) {
+
+			return DAOArtist.read(key);
+		} else {
+			throw new CustomException("Invalid key. The id must contain only numbers and the name only letters.",
+					ExceptionCode.INVALID_KEY);
+		}
+
 	}
 
 	public void clear() {

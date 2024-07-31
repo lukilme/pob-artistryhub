@@ -6,19 +6,18 @@ import java.util.Objects;
 public class Artist {
     private int id;
     private String name;
-    private ArrayList<Presentation> presentations;
-    private ArrayList<String> type;
+    private ArrayList<Presentation> presentations= new ArrayList<Presentation>();;
+    private ArrayList<String> type = new ArrayList<String>();
     private String biography;
 
     public Artist() {
-        super();
+        
     }
 
-    public Artist(int id, String name, ArrayList<Presentation> presentations, ArrayList<String> type, String biography) {
-        super();
+    public Artist(int id, String name, ArrayList<String> type, String biography) {
+ 
         this.id = id;
         this.name = name;
-        this.presentations = presentations;
         this.type = type;
         this.biography = biography;
     }

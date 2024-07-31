@@ -5,12 +5,8 @@
 </div>
 
 
+# ArtistryHub 🎉
 
-<div align="center">
-
-## ArtistryHub 🎉
-
-</div>
 
 ## Descrição 🗯:
 
@@ -107,7 +103,7 @@ Bibliotecas de testes unitários e criação de tabelas e gráficos foram introd
 
  ## Regras do professor ❗:
 
-```
+
 Objetivo
 
 Praticar os conceitos de persistência transparente de objetos, através do
@@ -129,4 +125,3 @@ de cada classe de negócio bem como as regras de negócio
 e uma tela para as 3 consultas.
 - (4pt) Apresentar o projeto
 Obs: A apresentação é obrigatória para cada aluno ter nota
-```

@@ -1,5 +1,6 @@
 package com.artistryhub.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.artistryhub.model.Artist;
@@ -23,28 +24,18 @@ public class DAOPresentation extends DAO<Presentation> {
 			return null;
 		}
 	}
-
-	@Override
-	public void create(Presentation params) {
-
+	
+	public Presentation getCombination(Artist artist, City city, LocalDate date) {
+		Query query = manager.query();
+		query.constrain(Presentation.class);
+		query.constrain(new DifferentDatePresentationEvaluation(artist, city, date));
+		List<Presentation> result = query.execute();
+		if(result.isEmpty())
+			return null;
+		else
+			return result.get(0);
+	
 	}
-
-	public Presentation update(Presentation params) {
-
-		return params;
-	}
-
-	public void delete(Presentation params) {
-
-	}
-
-	public List<Presentation> readAll() {
-		return null;
-	}
-
-	public void clear() {
-
-	};
 
 	public List<Presentation> getByArtist(Artist artist) {
 		Query query = manager.query();
@@ -93,6 +84,32 @@ public class DAOPresentation extends DAO<Presentation> {
 			}
 		}
 	}
+	
+	
+	public final class DifferentDatePresentationEvaluation implements Evaluation {
+	    private static final long serialVersionUID = 1L;
+	    private final Artist artist;
+	    private final City city;
+	    private final LocalDate presentationDate;
+
+	    public DifferentDatePresentationEvaluation(Artist artist, City city, LocalDate presentationDate) {
+	        this.artist = artist;
+	        this.city = city;
+	        this.presentationDate = presentationDate;
+	    }
+
+	    @Override
+	    public void evaluate(Candidate candidate) {
+	        Presentation presentation = (Presentation) candidate.getObject();
+	        if (presentation.getArtist().equals(artist) && presentation.getCity().equals(city) && presentationDate.isEqual(presentation.getDate())) {
+	            candidate.include(true);
+	        } else {
+	            candidate.include(false);
+	        }
+	    }
+	}
+
+	
 
 	private static class PresentationByCity implements Evaluation {
 		private static final long serialVersionUID = 1L;

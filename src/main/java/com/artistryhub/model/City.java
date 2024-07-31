@@ -6,17 +6,16 @@ import java.util.Objects;
 public class City {
 	private int id;
 	private String name;
-	private ArrayList<Presentation> presentations;
+	private ArrayList<Presentation> presentations = new ArrayList<Presentation>();
 
 	public City() {
 		super();
 	}
 
-	public City(int id, String name, ArrayList<Presentation> presentations) {
-		super();
+	public City(int id, String name) {
+
 		this.id = id;
 		this.name = name;
-		this.presentations = presentations;
 	}
 
 	@Override
@@ -64,15 +63,13 @@ public class City {
 	public void setPresentations(ArrayList<Presentation> presentations) {
 		this.presentations = presentations;
 	}
-	
+
 	public void addPresentation(Presentation presentation) {
-    	this.presentations.add(presentation);
-    }
-    
-    public void removePresentation(Presentation presentation) {
-    	this.presentations.remove(presentation);
-    }
-	
-	
+		this.presentations.add(presentation);
+	}
+
+	public void removePresentation(Presentation presentation) {
+		this.presentations.remove(presentation);
+	}
 
 }

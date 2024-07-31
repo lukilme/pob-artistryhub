@@ -36,7 +36,7 @@ public class CityFacade extends AbstractFacade<City> {
 			// Check if the name is unique
 		}
 		int newId = DAOCity.generatObsoleteId();
-		City newCity = new City(newId, name, null);
+		City newCity = new City(newId, name);
 		DAOCity.create(newCity);
 		DAO.commit();
 		return newCity;
@@ -97,7 +97,7 @@ public class CityFacade extends AbstractFacade<City> {
 		return DAOCity.read(key);
 	}
 
-	public City update(City params, String attribute, Object newValue) {
+	public City update(City params) {
 		return null;
 	}
 
@@ -139,5 +139,9 @@ public class CityFacade extends AbstractFacade<City> {
 	public void clear() {
 		DAOCity.clear();
 	}
+
+
+
+
 
 }
