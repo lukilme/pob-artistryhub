@@ -37,7 +37,7 @@ public class City {
 
 	@Override
 	public String toString() {
-		return "City [id=" + id + ", name=" + name + ", presentations=" + presentations + "]";
+		return "City [id=" + id + ", name=" + name + "]";
 	}
 
 	public int getId() {

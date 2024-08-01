@@ -24,7 +24,7 @@ public class Artist {
 
     @Override
     public String toString() {
-        return "Artist [id=" + id + ", name=" + name + ", presentations=" + presentations + ", type=" + type + ", biography=" + biography + "]";
+        return "Artist [id=" + id + ", name=" + name + ", type=" + type + ", biography=" + biography + "]";
     }
 
     @Override

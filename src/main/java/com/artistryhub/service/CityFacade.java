@@ -97,13 +97,19 @@ public class CityFacade extends AbstractFacade<City> {
 		return DAOCity.read(key);
 	}
 
-	public City update(City params) {
-		return null;
+	public City update(City updatedCity) {
+		DAO.open();
+		DAO.begin();
+		City oldCity = search(updatedCity.getId());
+		if(oldCity == null) {
+			
+		}
+		DAO.commit();
+		return updatedCity;
 	}
 
 	public City delete(Object key) {
 		DAO.open();
-
 		DAO.begin();
 		City deletedCity = null;
 		if (key instanceof City) {
@@ -139,9 +145,5 @@ public class CityFacade extends AbstractFacade<City> {
 	public void clear() {
 		DAOCity.clear();
 	}
-
-
-
-
 
 }

@@ -15,6 +15,7 @@ import com.artistryhub.model.Presentation;
 
  
 
+@SuppressWarnings("unused")
 public class GeralTest {
 	private final DAOArtist DAOArtistic = new DAOArtist();
 	private final DAOPresentation DAOPresentation = new DAOPresentation();

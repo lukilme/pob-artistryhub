@@ -16,7 +16,7 @@ public class Facade {
 	}
 	
 	public void createPresentation() {
-		//this.presentationFacade.create();
+		this.presentationFacade.create(null, null, null, 0, 0, 0, 0);
 	}
 
 }

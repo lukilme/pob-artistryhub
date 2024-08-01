@@ -1,6 +1,5 @@
 package com.artistryhub.dao;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.artistryhub.model.Artist;
@@ -24,8 +23,15 @@ public class DAOPresentation extends DAO<Presentation> {
 			return null;
 		}
 	}
+	@Override
+	public void create(Presentation newPresentation) {
+		if (newPresentation.getId() == 0) {
+			newPresentation.setId(super.generatObsoleteId());
+		}
+		manager.store(newPresentation);
+	}
 	
-	public Presentation getCombination(Artist artist, City city, LocalDate date) {
+	public Presentation getCombination(Artist artist, City city, String date) {
 		Query query = manager.query();
 		query.constrain(Presentation.class);
 		query.constrain(new DifferentDatePresentationEvaluation(artist, city, date));
@@ -90,9 +96,9 @@ public class DAOPresentation extends DAO<Presentation> {
 	    private static final long serialVersionUID = 1L;
 	    private final Artist artist;
 	    private final City city;
-	    private final LocalDate presentationDate;
+	    private final String presentationDate;
 
-	    public DifferentDatePresentationEvaluation(Artist artist, City city, LocalDate presentationDate) {
+	    public DifferentDatePresentationEvaluation(Artist artist, City city, String presentationDate) {
 	        this.artist = artist;
 	        this.city = city;
 	        this.presentationDate = presentationDate;
@@ -101,7 +107,7 @@ public class DAOPresentation extends DAO<Presentation> {
 	    @Override
 	    public void evaluate(Candidate candidate) {
 	        Presentation presentation = (Presentation) candidate.getObject();
-	        if (presentation.getArtist().equals(artist) && presentation.getCity().equals(city) && presentationDate.isEqual(presentation.getDate())) {
+	        if (presentation.getArtist().equals(artist) && presentation.getCity().equals(city) && presentation.getDate().equals(presentationDate)) {
 	            candidate.include(true);
 	        } else {
 	            candidate.include(false);

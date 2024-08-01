@@ -38,9 +38,9 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 	public Artist create(String name, ArrayList<String> type, String biography) {
 		DAO.begin();
 		// if something goes wrong, exceptions will be thrown
-		this.validateName(name);
-		this.validateType(type);
-		this.validateBiography(biography);
+		validateName(name);
+		validateType(type);
+		validateBiography(biography);
 
 		if (DAOArtist.read(name) != null) {
 			throw new CustomException("Uniqueness violated, the id or name must be unique",

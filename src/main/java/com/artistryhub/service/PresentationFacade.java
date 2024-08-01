@@ -2,8 +2,10 @@ package com.artistryhub.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
+import com.artistryhub.dao.DAO;
 import com.artistryhub.exception.ArtistNotFoundException;
 import com.artistryhub.exception.InvalidArtistException;
 import com.artistryhub.exception.InvalidTicketException;
@@ -13,7 +15,8 @@ import com.artistryhub.model.City;
 import com.artistryhub.model.Presentation;
 
 public class PresentationFacade extends AbstractFacade<Presentation> {
-	private static final DateTimeFormatter PATTERN = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+   
 
 	public List<Presentation> readAll() {
 		return DAOPresentation.readAll();
@@ -28,16 +31,27 @@ public class PresentationFacade extends AbstractFacade<Presentation> {
 		return null;
 	}
 
-	public Presentation create(LocalDate date, Artist artist, City city, double priceTicket, int duration,
+	public Presentation create(String dateString, Artist artist, City city, double priceTicket, int duration,
 			int ticketsSold, int ticketsTotal) {
+		DAO.begin();
 		validateArtist(artist);
 		validateCity(city);
 		validateTicket(ticketsSold, ticketsTotal);
 		validateTicketPrice(ticketsTotal);
-		validateDate(date);
+		
 		validateDuration(duration);
-		validateArtistPresence(artist, city, date);
-		return null;
+		validateArtistPresence(artist, city, dateString);
+
+		Presentation newPresentation = new Presentation(dateString, artist, city, priceTicket, duration, ticketsSold,
+				ticketsTotal);
+		city.addPresentation(newPresentation);
+		artist.addPresentation(newPresentation);
+		System.out.println(newPresentation);
+		DAOPresentation.create(newPresentation);
+		DAOArtist.update(artist);
+		DAOCity.update(city);
+		DAO.commit();
+		return newPresentation;
 	}
 
 	public Presentation search(Object key) {
@@ -67,14 +81,23 @@ public class PresentationFacade extends AbstractFacade<Presentation> {
 
 	}
 
-	private void validateArtistPresence(Artist artist, City city, LocalDate date) {
-		if(DAOPresentation.getCombination(artist, city, date)!=null) {
+	private void validateArtistPresence(Artist artist, City city, String date) {
+		if (DAOPresentation.getCombination(artist, city, date) != null) {
 			throw new UniquePresentationException("An artist can only perform once in a city ​​on the same date");
 		}
 	}
 
-	private void validateArtist(Object verifyArtist) throws InvalidArtistException, ArtistNotFoundException, NullPointerException {
-		if(verifyArtist == null) {
+	public LocalDate parseDateSafely(String dateString) {
+	    try {
+	        return LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	    } catch (DateTimeParseException e) {
+	        throw new IllegalArgumentException("Invalid date format: " + e.getMessage());
+	    }
+	}
+
+	private void validateArtist(Object verifyArtist)
+			throws InvalidArtistException, ArtistNotFoundException, NullPointerException {
+		if (verifyArtist == null) {
 			throw new NullPointerException("Artist is null");
 		}
 		if (!(verifyArtist instanceof Artist || verifyArtist instanceof String)) {

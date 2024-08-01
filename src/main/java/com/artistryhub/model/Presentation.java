@@ -1,11 +1,10 @@
 package com.artistryhub.model;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 public class Presentation {
 	private int id;
-	private LocalDate date;
+	private String date;
 	private Artist artist;
 	private City city;
 	private double priceTicket;
@@ -17,7 +16,7 @@ public class Presentation {
 	
 	}
 
-	public Presentation(LocalDate date, Artist artist, City city, double priceTicket, int duration, int ticketsSold,
+	public Presentation(String date, Artist artist, City city, double priceTicket, int duration, int ticketsSold,
 			int ticketsTotal) {
 		this.date = date;
 		this.artist = artist;
@@ -61,11 +60,11 @@ public class Presentation {
 		this.id = id;
 	}
 
-	public LocalDate getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
