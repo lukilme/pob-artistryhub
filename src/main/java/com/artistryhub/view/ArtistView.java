@@ -259,13 +259,24 @@ public class ArtistView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Create Artist!", "Confirmação", JOptionPane.INFORMATION_MESSAGE);
 
     	}catch(Exception e) {
-    		System.out.println(e.getMessage());
+    		JOptionPane.showMessageDialog(null, e.getMessage(), "Confirmação", JOptionPane.INFORMATION_MESSAGE);
     	}
    
     }                                            
 
     private void updateArtistActionPerformed(java.awt.event.ActionEvent evt) { 
-    	
+    	String BioInput = this.InputBiography.getText().replace("\n", "");;
+    	String GenreInput = this.InputGenre.getText();
+    	String NameInput = this.InputName.getText();
+    	try {
+  
+    		facade.updateArtist(NameInput, GenreInput, BioInput);
+    		this.InputName.setText("");
+    		this.InputGenre.setText("");
+    		this.InputBiography.setText("");
+    	}catch(Exception e) {
+    		JOptionPane.showMessageDialog(null, e.getMessage(), "Confirmação", JOptionPane.INFORMATION_MESSAGE);
+    	}
    
     }                                            
 
@@ -274,6 +285,8 @@ public class ArtistView extends javax.swing.JFrame {
     	try {
     		this.facade.deleteArtist(NameInput);
     		this.InputName.setText("");
+    		this.InputGenre.setText("");
+    		this.InputBiography.setText("");
     	}catch(Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Confirmação", JOptionPane.INFORMATION_MESSAGE);
 

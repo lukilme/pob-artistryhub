@@ -219,8 +219,8 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 
 		String newGenre = (String) newValue;
 		if (!updateArtist.getBiography().equals(newGenre)) {
-			validateBiography(newGenre);
-			updateArtist.setBiography(newGenre);
+			validateGenre(newGenre);
+			updateArtist.setGenre(newGenre);
 		}
 	}
 
@@ -280,6 +280,7 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 	 *                         characters.
 	 */
 	public void validateBiography(String biography) {
+		System.out.println(biography);
 		if (biography == null || biography.length() < 16 || biography.length() > 255) {
 			throw new CustomException("Biography must be between " + ArtistFacade.MIN_BIOGRAPHY + " and "
 					+ ArtistFacade.MAX_BIOGRAPHY + " characters.", ExceptionCode.INVALID_BIOGRAPHY);
