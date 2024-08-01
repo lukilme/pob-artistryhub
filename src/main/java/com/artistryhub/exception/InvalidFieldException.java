@@ -1,6 +1,6 @@
 package com.artistryhub.exception;
 
-public class InvalidFieldException extends RuntimeException  {
+public class InvalidFieldException extends IllegalArgumentException  {
 
 	private static final long serialVersionUID = 1L;
 

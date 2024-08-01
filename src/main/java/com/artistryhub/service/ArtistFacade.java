@@ -3,6 +3,7 @@ package com.artistryhub.service;
 import com.artistryhub.dao.DAO;
 import com.artistryhub.exception.CustomException;
 import com.artistryhub.exception.ExceptionCode;
+import com.artistryhub.exception.InvalidFieldException;
 import com.artistryhub.model.Artist;
 import com.artistryhub.model.City;
 import com.artistryhub.model.Presentation;
@@ -16,7 +17,8 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 	private static final int MAX_NAME = 32;
 	private static final int MIN_BIOGRAPHY = 16;
 	private static final int MAX_BIOGRAPHY = 255;
-	private static final int MAX_TYPES = 4;
+	private static final int MIN_GENRE = 3;
+	private static final int MAX_GENRE = 16;
 
 	/**
 	 * This method creates a new artist instance and saves it to the database if it
@@ -35,11 +37,11 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 	 * @throws CustomException with ExceptionCode.UNIQUENESS_VIOLATION if name or id
 	 *                         are not unique.
 	 */
-	public Artist create(String name, ArrayList<String> type, String biography) {
+	public Artist create(String name, String genre, String biography) {
 		DAO.begin();
 		// if something goes wrong, exceptions will be thrown
 		validateName(name);
-		validateType(type);
+		validateGenre(genre);
 		validateBiography(biography);
 
 		if (DAOArtist.read(name) != null) {
@@ -47,7 +49,7 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 					ExceptionCode.UNIQUENESS_VIOLATION);
 		}
 		int newId = DAOArtist.generatObsoleteId();
-		Artist newArtist = new Artist(newId, name, type, biography);
+		Artist newArtist = new Artist(newId, name, genre, biography);
 		DAOArtist.create(newArtist);
 		DAO.commit();
 		return newArtist;
@@ -62,26 +64,11 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		return null;
 	}
 
-	/**
-	 * This method creates a new artist instance and saves it to the database if it
-	 * complies with the business rules.
-	 *
-	 * @param newArtist The artist instance to be created.
-	 * @return The created instance of the artist.
-	 * @throws CustomException with ExceptionCode.INVALID_NAME if the name is
-	 *                         invalid.
-	 * @throws CustomException with ExceptionCode.INVALID_TYPE if the type is
-	 *                         invalid.
-	 * @throws CustomException with ExceptionCode.INVALID_BIOGRAPHY if the biography
-	 *                         is invalid.
-	 * @throws CustomException with ExceptionCode.UNIQUENESS_VIOLATION if the id or
-	 *                         name are not unique.
-	 */
 	public Artist create(Artist newArtist) {
 		DAO.begin();
 		// If something goes wrong, exceptions will be thrown
 		this.validateName(newArtist.getName());
-		this.validateType(newArtist.getType());
+		this.validateGenre(newArtist.getGenre());
 		this.validateBiography(newArtist.getBiography());
 
 		// Check if the name is unique
@@ -118,7 +105,7 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		}
 
 		ArrayList<Presentation> artistPresentations = deletedArtist.getPresentations();
-
+		System.out.println(artistPresentations);
 		if (artistPresentations != null) {
 			for (Presentation artistPresentation : artistPresentations) {
 				City cityRemovedPresentation = artistPresentation.getCity();
@@ -150,11 +137,27 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		if (!oldArtist.getBiography().equals(updateArtist.getBiography())) {
 			updateBiography(updateArtist, updateArtist.getBiography());
 		}
-		if (!oldArtist.getType().equals(updateArtist.getType())) {
-			updateType(updateArtist, updateArtist.getType());
+		if (!oldArtist.getGenre().equals(updateArtist.getGenre())) {
+			updateGenre(updateArtist, updateArtist.getGenre());
 		}
 		DAOArtist.update(updateArtist);
 		return updateArtist;
+	}
+
+	public Artist update(String name, String genre, String biography) {
+		DAO.begin();
+		Artist oldArtist = DAOArtist.read(name);
+		if (oldArtist == null) {
+			throw new CustomException("No Artist found to updated", ExceptionCode.ARTIST_NOT_FOUND);
+		}
+		if (!oldArtist.getBiography().equals(biography)) {
+			updateBiography(oldArtist, biography);
+		}
+		if (!oldArtist.getGenre().equals(genre)) {
+			updateGenre(oldArtist, genre);
+		}
+		DAOArtist.update(oldArtist);
+		return oldArtist;
 	}
 
 	public Artist search(Object key) {
@@ -191,10 +194,7 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		}
 	}
 
-	private void updateName(Artist updateArtist, Object newValue) {
-		if (!(newValue instanceof String)) {
-			throw new CustomException("Invalid type for name.", ExceptionCode.INVALID_TYPE);
-		}
+	private void updateName(Artist updateArtist, String newValue) {
 
 		String newName = (String) newValue;
 		if (!updateArtist.getName().equals(newName)) {
@@ -207,11 +207,7 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		}
 	}
 
-	private void updateBiography(Artist updateArtist, Object newValue) {
-		if (!(newValue instanceof String)) {
-			throw new CustomException("Invalid type for biography.", ExceptionCode.INVALID_TYPE);
-		}
-
+	private void updateBiography(Artist updateArtist, String newValue) {
 		String newBiography = (String) newValue;
 		if (!updateArtist.getBiography().equals(newBiography)) {
 			validateBiography(newBiography);
@@ -219,22 +215,12 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		}
 	}
 
-	private void updateType(Artist updateArtist, Object newValue) {
-		if (!(newValue instanceof ArrayList<?> tempList)) {
-			throw new CustomException("Invalid type for type.", ExceptionCode.INVALID_TYPE);
-		}
+	private void updateGenre(Artist updateArtist, String newValue) {
 
-		for (Object obj : tempList) {
-			if (!(obj instanceof String)) {
-				throw new CustomException("Invalid type for elements in type list.", ExceptionCode.INVALID_TYPE);
-			}
-		}
-
-		@SuppressWarnings("unchecked")
-		ArrayList<String> newType = (ArrayList<String>) tempList;
-		if (!updateArtist.getType().equals(newType)) {
-			validateType(newType);
-			updateArtist.setType(newType);
+		String newGenre = (String) newValue;
+		if (!updateArtist.getBiography().equals(newGenre)) {
+			validateBiography(newGenre);
+			updateArtist.setBiography(newGenre);
 		}
 	}
 
@@ -265,10 +251,21 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 	 *                         method from continuing if there are no types, or
 	 *                         there are more than 4
 	 */
-	public void validateType(ArrayList<String> types) {
-		if (types == null || types.size() > 4) {
-			throw new CustomException("Types must be at most " + ArtistFacade.MAX_TYPES + ".",
-					ExceptionCode.INVALID_TYPE);
+	public void validateGenre(String genre) {
+		if (genre == null) {
+			throw new NullPointerException("Gender cannot be null.");
+		}
+		if (!Pattern.matches("^[a-zA-Z ]+", genre)) {
+			throw new InvalidFieldException(
+					"Error validating genre: '" + genre + "'\r\n" + "The genre must contain only letters and spaces.");
+		}
+		if (genre.length() < ArtistFacade.MIN_GENRE) {
+			throw new InvalidFieldException("Error validating genre: '" + genre + "'\r\n"
+					+ "gender must be longer than " + ArtistFacade.MAX_GENRE + " characters.");
+		}
+		if (genre.length() > ArtistFacade.MAX_GENRE) {
+			throw new InvalidFieldException("Error validating genre: '" + genre + "'\r\n"
+					+ "gender cannot have more than " + ArtistFacade.MAX_GENRE + " characters");
 		}
 	}
 

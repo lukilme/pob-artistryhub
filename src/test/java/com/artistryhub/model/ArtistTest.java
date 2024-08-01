@@ -1,7 +1,5 @@
 package com.artistryhub.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,7 @@ public class ArtistTest {
     public void addTest(){
 		DAO.open();
 		DAO.begin();
-		Artist artist = new Artist(1, "Katy Perry",  new ArrayList<String>(Arrays.asList("rock", "pop")), "artist who sings and does things");
+		Artist artist = new Artist(1, "Katy Perry", "pop", "artist who sings and does things");
 		daoArtist.create(artist);
 		DAO.commit();
 		DAO.close();
@@ -45,7 +43,7 @@ public class ArtistTest {
 	@Test
     public void delete(){
 		DAO.open();
-		Artist artist = new Artist(1, "Katy Perry",  new ArrayList<String>(Arrays.asList("rock", "pop")), "artist who sings and does things");
+		Artist artist = new Artist(1, "Katy Perry", "pop", "artist who sings and does things");
 		daoArtist.create(artist);
 		Artist result = daoArtist.read(1);
 		daoArtist.delete(result);

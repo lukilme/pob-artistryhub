@@ -36,10 +36,10 @@ public class PresentationFacadeTest {
 		Artist artist4 = facadeArtist.search(4);
 		showData();
 		
-		facadePresentation.create("01/05/2026",artist1,city1,20.40,120,3000,4000);
-		facadePresentation.create("01/05/2025",artist2,city2,10.50,600,3040,4000);
-		facadePresentation.create("01/05/2025",artist3,city3,120.30,400,7000,8000);
-		facadePresentation.create("01/05/2028",artist4,city4,620.40,300,1000,3000);
+		facadePresentation.create("01/05/2026",artist1.getName(),city1.getName(),20.40,120,3000,4000);
+		facadePresentation.create("01/05/2025",artist2.getName(),city2.getName(),10.50,600,3040,4000);
+		facadePresentation.create("01/05/2025",artist3.getName(),city3.getName(),120.30,400,7000,8000);
+		facadePresentation.create("01/05/2028",artist4.getName(),city4.getName(),620.40,300,1000,3000);
 		
 		showData();
 		facadeCity.finish();

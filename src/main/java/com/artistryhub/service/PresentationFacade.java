@@ -16,8 +16,6 @@ import com.artistryhub.model.Presentation;
 
 public class PresentationFacade extends AbstractFacade<Presentation> {
 
-   
-
 	public List<Presentation> readAll() {
 		return DAOPresentation.readAll();
 	}
@@ -27,29 +25,28 @@ public class PresentationFacade extends AbstractFacade<Presentation> {
 	}
 
 	public Presentation create(Presentation newPresentation) {
-
 		return null;
 	}
 
-	public Presentation create(String dateString, Artist artist, City city, double priceTicket, int duration,
+	public Presentation create(String dateString, String artist, String city, double priceTicket, int duration,
 			int ticketsSold, int ticketsTotal) {
 		DAO.begin();
-		validateArtist(artist);
-		validateCity(city);
+
+		Artist presentationArtist = validateArtist(artist);
+		City presentationCity = validateCity(city);
+
 		validateTicket(ticketsSold, ticketsTotal);
 		validateTicketPrice(ticketsTotal);
-		
 		validateDuration(duration);
-		validateArtistPresence(artist, city, dateString);
+		validateArtistPresence(presentationArtist, presentationCity, dateString);
 
-		Presentation newPresentation = new Presentation(dateString, artist, city, priceTicket, duration, ticketsSold,
+		Presentation newPresentation = new Presentation(dateString, presentationArtist, presentationCity, priceTicket, duration, ticketsSold,
 				ticketsTotal);
-		city.addPresentation(newPresentation);
-		artist.addPresentation(newPresentation);
-		System.out.println(newPresentation);
+		presentationArtist.addPresentation(newPresentation);
+		presentationCity.addPresentation(newPresentation);
 		DAOPresentation.create(newPresentation);
-		DAOArtist.update(artist);
-		DAOCity.update(city);
+		DAOArtist.update(presentationArtist);
+		DAOCity.update(presentationCity);
 		DAO.commit();
 		return newPresentation;
 	}
@@ -88,13 +85,14 @@ public class PresentationFacade extends AbstractFacade<Presentation> {
 	}
 
 	public LocalDate parseDateSafely(String dateString) {
-	    try {
-	        return LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-	    } catch (DateTimeParseException e) {
-	        throw new IllegalArgumentException("Invalid date format: " + e.getMessage());
-	    }
+		try {
+			return LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		} catch (DateTimeParseException e) {
+			throw new IllegalArgumentException("Invalid date format: " + e.getMessage());
+		}
 	}
 
+	@SuppressWarnings("unused")
 	private void validateArtist(Object verifyArtist)
 			throws InvalidArtistException, ArtistNotFoundException, NullPointerException {
 		if (verifyArtist == null) {
@@ -118,6 +116,33 @@ public class PresentationFacade extends AbstractFacade<Presentation> {
 		}
 	}
 
+	private City validateCity(String verifyCity) {
+		if (verifyCity == null) {
+			throw new NullPointerException("City value cannot be null.");
+		}
+
+		City cityFounded = DAOCity.read(verifyCity);
+		if (cityFounded == null) {
+			throw new ArtistNotFoundException("City with name '" + verifyCity + "' not found.");
+		} else {
+			return cityFounded;
+		}
+
+	}
+	private Artist validateArtist(String verifyArtist) {
+		if (verifyArtist == null) {
+			throw new NullPointerException("Artist value cannot be null.");
+		}
+
+		Artist artistFounded = DAOArtist.read(verifyArtist);
+		if (artistFounded == null) {
+			throw new ArtistNotFoundException("City with name '" + verifyArtist + "' not found.");
+		} else {
+			return artistFounded;
+		}
+	}
+
+	@SuppressWarnings({ "unused" })
 	private void validateCity(Object verifyCity) {
 		if (!(verifyCity instanceof City || verifyCity instanceof String)) {
 			throw new InvalidArtistException(
