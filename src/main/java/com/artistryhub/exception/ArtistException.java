@@ -1,10 +1,10 @@
 package com.artistryhub.exception;
 
-public class InvalidIdException extends RuntimeException  {
+public class ArtistException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public InvalidIdException(String message) {
+	public ArtistException(String message) {
 		super(message);
 	}
 }

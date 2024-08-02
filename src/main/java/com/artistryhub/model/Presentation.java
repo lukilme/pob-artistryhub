@@ -13,7 +13,7 @@ public class Presentation {
 	private int ticketsTotal;
 
 	public Presentation() {
-	
+
 	}
 
 	public Presentation(String date, Artist artist, City city, double priceTicket, int duration, int ticketsSold,

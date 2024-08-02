@@ -1,37 +1,33 @@
 package com.artistryhub.view;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
 import java.awt.Color;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
+import java.awt.EventQueue;
 import java.awt.Font;
-import javax.swing.JTextField;
-
-import com.artistryhub.service.Facade;
-import com.artistryhub.exception.ArtistException;
-import com.artistryhub.model.Artist;
-
-import javax.swing.JTextArea;
-import javax.swing.JButton;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
 
-public class ArtistView {
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import com.artistryhub.exception.CityException;
+import com.artistryhub.model.City;
+import com.artistryhub.service.Facade;
+
+public class CityView {
 
 	private JFrame frame;
 	private JTextField nameInput;
-	private JTextField genreInput;
-	private JTextArea biographyInput;
-	private JTextArea showArtistData;
+	private JTextArea showCityData;
 	private static Facade facade = new Facade();
+	private int index = 0;
 
 	/**
 	 * Launch the application.
@@ -40,7 +36,7 @@ public class ArtistView {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ArtistView window = new ArtistView();
+					CityView window = new CityView();
 					window.frame.setVisible(true);
 					window.frame.addWindowListener(new WindowAdapter() {
 						@Override
@@ -51,7 +47,6 @@ public class ArtistView {
 					});
 				} catch (Exception e) {
 					facade.finish();
-
 					e.printStackTrace();
 				}
 			}
@@ -65,7 +60,7 @@ public class ArtistView {
 	/**
 	 * Create the application.
 	 */
-	public ArtistView() {
+	public CityView() {
 		initialize();
 	}
 
@@ -73,19 +68,18 @@ public class ArtistView {
 		facade = newFacade;
 	}
 
-	public void updateViewArtist() {
-		List<Artist> allArtist = facade.getAllArtist();
+	public void updateViewCity() {
+		List<City> allCity = facade.getAllCities();
 		String resultFinal = "";
 		int counter = 1;
-		for (Artist artist : allArtist) {
-			String subString = counter + "-) name: " + artist.getName() + "<|> genre: " + artist.getGenre() + "\n\r"
-					+ "biography: \n" + artist.getBiography() + "\nnumber of presentations: "
-					+ artist.getPresentations().size() + "\n"
+		for (City city : allCity) {
+			String subString = counter + "-) name: " + city.getName() + "\n number of presentations: "
+					+ +city.getPresentations().size() + "\n"
 					+ "--------------------------------------------------------------------------------------------\n";
 			resultFinal += subString;
 			counter += 1;
 		}
-		showArtistData.setText(resultFinal);
+		showCityData.setText(resultFinal);
 	}
 
 	/**
@@ -95,7 +89,6 @@ public class ArtistView {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(0, 102, 204));
 		frame.getContentPane().setLayout(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 28, 433, 400);
@@ -108,57 +101,25 @@ public class ArtistView {
 		panel.add(nameLabel);
 
 		nameInput = new JTextField();
-		nameInput.setBounds(10, 33, 196, 20);
+		nameInput.setBounds(10, 32, 295, 20);
 		panel.add(nameInput);
 		nameInput.setColumns(10);
 
 		JLabel infoName = new JLabel("Name must be unique");
 		infoName.setForeground(new Color(0, 0, 0));
 		infoName.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		infoName.setBounds(10, 56, 196, 14);
+		infoName.setBounds(10, 58, 196, 14);
 		panel.add(infoName);
-
-		JLabel genreLabel = new JLabel("Genre:");
-		genreLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		genreLabel.setBounds(216, 17, 207, 14);
-		panel.add(genreLabel);
-
-		genreInput = new JTextField();
-		genreInput.setBounds(216, 33, 207, 20);
-		panel.add(genreInput);
-		genreInput.setColumns(10);
-
-		JLabel infoGenre = new JLabel("genre cannot have numbers");
-		infoGenre.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		infoGenre.setBounds(216, 56, 207, 14);
-		panel.add(infoGenre);
-
-		JLabel biographyLabel = new JLabel("Biography:");
-		biographyLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		biographyLabel.setBounds(10, 81, 207, 23);
-		panel.add(biographyLabel);
-
-		biographyInput = new JTextArea();
-		biographyInput.setBounds(10, 111, 413, 117);
-		panel.add(biographyInput);
-
-		JLabel infoBiography = new JLabel("minimum of 16 characters and maximum of 255");
-		infoBiography.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		infoBiography.setBounds(10, 236, 413, 14);
-		panel.add(infoBiography);
 
 		JButton createButton = new JButton("Create");
 		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = nameInput.getText();
-				String genre = genreInput.getText();
-				String biography = biographyInput.getText();
+
 				try {
-					facade.createArtist(name, genre, biography);
+					facade.createCity(name);
 					nameInput.setText("");
-					genreInput.setText("");
-					biographyInput.setText("");
-					updateViewArtist();
+					updateViewCity();
 				} catch (Exception error) {
 					JOptionPane.showMessageDialog(null, error.getMessage(), "Confirmação",
 							JOptionPane.INFORMATION_MESSAGE);
@@ -175,9 +136,9 @@ public class ArtistView {
 				String name = nameInput.getText();
 
 				try {
-					facade.deleteArtist(name);
+					facade.deleteCity(name);
 					nameInput.setText("");
-					updateViewArtist();
+					updateViewCity();
 				} catch (Exception error) {
 					System.out.println(error);
 					JOptionPane.showMessageDialog(null, error.getMessage(), "Confirmação",
@@ -195,14 +156,13 @@ public class ArtistView {
 				String name = nameInput.getText();
 
 				try {
-					Artist foundedArtist = facade.searchArtist(name);
-					if (foundedArtist == null) {
-						throw new ArtistException("Artist not found");
+					City foundCity = facade.searchCity(name);
+					if (foundCity == null) {
+						throw new CityException("City not found");
 					}
-
-					genreInput.setText(foundedArtist.getGenre());
-					biographyInput.setText(foundedArtist.getBiography());
-					updateViewArtist();
+					JOptionPane.showMessageDialog(null, "City " + name + " exists", "Confirmação",
+							JOptionPane.INFORMATION_MESSAGE);
+					index = facade.getIndexCity(foundCity); 
 				} catch (Exception error) {
 					JOptionPane.showMessageDialog(null, error.getMessage(), "Confirmação",
 							JOptionPane.INFORMATION_MESSAGE);
@@ -217,14 +177,11 @@ public class ArtistView {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = nameInput.getText();
-				String genre = genreInput.getText();
-				String biography = biographyInput.getText();
+
 				try {
-					facade.updateArtist(name, genre, biography);
+					facade.updateCity(index, name);
 					nameInput.setText("");
-					genreInput.setText("");
-					biographyInput.setText("");
-					updateViewArtist();
+					updateViewCity();
 				} catch (Exception error) {
 					JOptionPane.showMessageDialog(null, error.getMessage(), "Confirmação",
 							JOptionPane.INFORMATION_MESSAGE);
@@ -239,19 +196,16 @@ public class ArtistView {
 		panel_1.setBounds(453, 28, 341, 400);
 		frame.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 321, 378);
-		panel_1.add(scrollPane);
 
-		showArtistData = new JTextArea();
-		scrollPane.setViewportView(showArtistData);
-		showArtistData.setFont(new Font("Gadugi", Font.BOLD, 11));
-		showArtistData.setEditable(false);
-		updateViewArtist();
+		showCityData = new JTextArea();
+		showCityData.setEditable(false);
+		showCityData.setBounds(10, 11, 321, 378);
+		panel_1.add(showCityData);
+		updateViewCity();
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 820, 478);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	}
+
 }

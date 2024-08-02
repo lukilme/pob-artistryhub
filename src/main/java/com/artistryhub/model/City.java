@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class City {
-	private int id;
 	private String name;
 	private ArrayList<Presentation> presentations = new ArrayList<Presentation>();
 
@@ -12,15 +11,14 @@ public class City {
 		super();
 	}
 
-	public City(int id, String name) {
+	public City(String name) {
 
-		this.id = id;
 		this.name = name;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(name);
 	}
 
 	@Override
@@ -32,20 +30,12 @@ public class City {
 		if (getClass() != obj.getClass())
 			return false;
 		City other = (City) obj;
-		return Objects.equals(id, other.id);
+		return Objects.equals(name, other.name);
 	}
 
 	@Override
 	public String toString() {
-		return "City [id=" + id + ", name=" + name + "]";
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+		return "City name=" + name + "]";
 	}
 
 	public String getName() {

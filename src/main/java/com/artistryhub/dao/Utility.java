@@ -7,7 +7,6 @@ import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.config.EmbeddedConfiguration;
 
-
 public class Utility {
     private static ObjectContainer manager = null;
 
@@ -24,10 +23,13 @@ public class Utility {
         setting.common().objectClass(Presentation.class).cascadeOnDelete(false);
         setting.common().objectClass(Presentation.class).cascadeOnUpdate(true);
         setting.common().objectClass(Presentation.class).cascadeOnActivate(true);
-
-        setting.common().objectClass(City.class).objectField("id").indexed(true);
-        setting.common().objectClass(Artist.class).objectField("id").indexed(true);
+        
+        setting.common().objectClass(City.class).objectField("name").indexed(true);
         setting.common().objectClass(Artist.class).objectField("name").indexed(true);
+        setting.common().objectClass(Presentation.class).objectField("id").indexed(true);
+        setting.common().objectClass(Presentation.class).objectField("date").indexed(true);
+        setting.common().objectClass(Presentation.class).objectField("artist").indexed(true);
+        setting.common().objectClass(Presentation.class).objectField("city").indexed(true);
 
         manager = Db4oEmbedded.openFile(setting, "database.db4o");
         return manager;
@@ -40,3 +42,4 @@ public class Utility {
         }
     }
 }
+

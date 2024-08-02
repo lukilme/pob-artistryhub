@@ -7,7 +7,7 @@ import com.artistryhub.dao.DAOArtist;
 import com.artistryhub.dao.DAOCity;
 import com.artistryhub.dao.DAOPresentation;
 
-abstract class AbstractFacade<T> implements FacadeInterface<T> {
+abstract class AbstractFacade<T>{
 	protected DAOArtist DAOArtist;
 	protected DAOPresentation DAOPresentation;
 	protected DAOCity DAOCity;
@@ -22,16 +22,6 @@ abstract class AbstractFacade<T> implements FacadeInterface<T> {
 	public void finish() {
 		DAO.close();
 	}
-
-	public abstract T create(T params);
-
-	public abstract T search(Object key);
-
-	public abstract T update(T params);
-
-	public abstract T delete(Object key);
-
-	public abstract List<T> readAll();
-
-	public abstract void clear();
+	
+	abstract public List<T> getAll();
 }

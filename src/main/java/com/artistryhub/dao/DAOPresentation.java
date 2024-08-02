@@ -4,17 +4,18 @@ import java.util.List;
 
 import com.artistryhub.model.Artist;
 import com.artistryhub.model.City;
-import com.artistryhub.model.Presentation;
 import com.db4o.query.Candidate;
 import com.db4o.query.Evaluation;
 import com.db4o.query.Query;
+
+import com.artistryhub.model.Presentation;
 
 public class DAOPresentation extends DAO<Presentation> {
 
 	@Override
 	public Presentation read(Object key) {
 		Query query = manager.query();
-		query.constrain(Artist.class);
+		query.constrain(Presentation.class);
 		query.descend("id").constrain(key);
 		List<Presentation> result = query.execute();
 		if (!result.isEmpty()) {
@@ -23,24 +24,32 @@ public class DAOPresentation extends DAO<Presentation> {
 			return null;
 		}
 	}
+
 	@Override
 	public void create(Presentation newPresentation) {
 		if (newPresentation.getId() == 0) {
-			newPresentation.setId(super.generatObsoleteId());
+			newPresentation.setId(super.generateId());
 		}
 		manager.store(newPresentation);
 	}
-	
+
 	public Presentation getCombination(Artist artist, City city, String date) {
 		Query query = manager.query();
 		query.constrain(Presentation.class);
 		query.constrain(new DifferentDatePresentationEvaluation(artist, city, date));
 		List<Presentation> result = query.execute();
-		if(result.isEmpty())
+		if (result.isEmpty())
 			return null;
 		else
 			return result.get(0);
-	
+
+	}
+
+	public List<Presentation> getByDate(String date) {
+		Query query = manager.query();
+		query.constrain(Presentation.class);
+		query.constrain(new PresentationByDate(date));
+		return query.execute();
 	}
 
 	public List<Presentation> getByArtist(Artist artist) {
@@ -50,10 +59,10 @@ public class DAOPresentation extends DAO<Presentation> {
 		return query.execute();
 	}
 
-	public List<Presentation> getByCity(City city) {
+	public List<Presentation> getByCityAndDate(City city, String date) {
 		Query query = manager.query();
 		query.constrain(Presentation.class);
-		query.constrain(new PresentationByCity(city));
+		query.constrain(new PresentationByCityAndDate(city, date));
 		return query.execute();
 	}
 
@@ -74,7 +83,7 @@ public class DAOPresentation extends DAO<Presentation> {
 
 	private static class PresentationByArtist implements Evaluation {
 		private static final long serialVersionUID = 1L;
-		private Artist artist;
+		private final Artist artist;
 
 		public PresentationByArtist(Artist artist) {
 			this.artist = artist;
@@ -90,45 +99,64 @@ public class DAOPresentation extends DAO<Presentation> {
 			}
 		}
 	}
-	
-	
-	public final class DifferentDatePresentationEvaluation implements Evaluation {
-	    private static final long serialVersionUID = 1L;
-	    private final Artist artist;
-	    private final City city;
-	    private final String presentationDate;
 
-	    public DifferentDatePresentationEvaluation(Artist artist, City city, String presentationDate) {
-	        this.artist = artist;
-	        this.city = city;
-	        this.presentationDate = presentationDate;
-	    }
-
-	    @Override
-	    public void evaluate(Candidate candidate) {
-	        Presentation presentation = (Presentation) candidate.getObject();
-	        if (presentation.getArtist().equals(artist) && presentation.getCity().equals(city) && presentation.getDate().equals(presentationDate)) {
-	            candidate.include(true);
-	        } else {
-	            candidate.include(false);
-	        }
-	    }
-	}
-
-	
-
-	private static class PresentationByCity implements Evaluation {
+	private static class PresentationByDate implements Evaluation {
 		private static final long serialVersionUID = 1L;
-		private City city;
+		private final String date;
 
-		public PresentationByCity(City city) {
-			this.city = city;
+		public PresentationByDate(String date) {
+			this.date = date;
 		}
 
 		@Override
 		public void evaluate(Candidate candidate) {
 			Presentation presentation = (Presentation) candidate.getObject();
-			if (presentation.getCity().equals(city))
+			if (presentation.getDate().equals(date)) {
+				candidate.include(true);
+			} else {
+				candidate.include(false);
+			}
+		}
+	}
+
+	public final class DifferentDatePresentationEvaluation implements Evaluation {
+		private static final long serialVersionUID = 1L;
+		private final Artist artist;
+		private final City city;
+		private final String presentationDate;
+
+		public DifferentDatePresentationEvaluation(Artist artist, City city, String presentationDate) {
+			this.artist = artist;
+			this.city = city;
+			this.presentationDate = presentationDate;
+		}
+
+		@Override
+		public void evaluate(Candidate candidate) {
+			Presentation presentation = (Presentation) candidate.getObject();
+			if (presentation.getArtist().equals(artist) && presentation.getCity().equals(city)
+					&& presentation.getDate().equals(presentationDate)) {
+				candidate.include(true);
+			} else {
+				candidate.include(false);
+			}
+		}
+	}
+
+	private static class PresentationByCityAndDate implements Evaluation {
+		private static final long serialVersionUID = 1L;
+		private final City city;
+		private final String date;
+
+		public PresentationByCityAndDate(City city, String date) {
+			this.city = city;
+			this.date = date;
+		}
+
+		@Override
+		public void evaluate(Candidate candidate) {
+			Presentation presentation = (Presentation) candidate.getObject();
+			if (presentation.getCity().equals(city) && presentation.getDate().equals(date))
 				candidate.include(true);
 			else
 				candidate.include(false);
@@ -137,8 +165,8 @@ public class DAOPresentation extends DAO<Presentation> {
 
 	private static class PresentationByCityAndArtist implements Evaluation {
 		private static final long serialVersionUID = 1L;
-		private City city;
-		private Artist artist;
+		private final City city;
+		private final Artist artist;
 
 		public PresentationByCityAndArtist(City city, Artist artist) {
 			this.city = city;
@@ -148,10 +176,11 @@ public class DAOPresentation extends DAO<Presentation> {
 		@Override
 		public void evaluate(Candidate candidate) {
 			Presentation presentation = (Presentation) candidate.getObject();
-			if (presentation.getCity().equals(city) && presentation.getArtist().equals(artist))
+			if (presentation.getCity().equals(city) && presentation.getArtist().equals(artist)) {
 				candidate.include(true);
-			else
+			} else {
 				candidate.include(false);
+			}
 		}
 	}
 

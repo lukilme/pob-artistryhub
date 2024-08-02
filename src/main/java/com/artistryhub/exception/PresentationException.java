@@ -1,10 +1,10 @@
 package com.artistryhub.exception;
 
-public class InvalidNameException extends RuntimeException  {
+public class PresentationException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public InvalidNameException(String message) {
+	public PresentationException(String message) {
 		super(message);
 	}
 }

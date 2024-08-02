@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Artist {
-	private int id;
 	private String name;
 	private ArrayList<Presentation> presentations = new ArrayList<Presentation>();;
 	private String genre;
@@ -14,9 +13,7 @@ public class Artist {
 
 	}
 
-	public Artist(int id, String name, String genre, String biography) {
-
-		this.id = id;
+	public Artist(String name, String genre, String biography) {
 		this.name = name;
 		this.genre = genre;
 		this.biography = biography;
@@ -24,12 +21,12 @@ public class Artist {
 
 	@Override
 	public String toString() {
-		return "Artist [id=" + id + ", name=" + name + ", type=" + genre + ", biography=" + biography + "]";
+		return "Artist name=" + name + ", type=" + genre + ", biography=" + biography + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name);
+		return Objects.hash(name);
 	}
 
 	@Override
@@ -41,16 +38,8 @@ public class Artist {
 		if (getClass() != obj.getClass())
 			return false;
 		Artist other = (Artist) obj;
-		return Objects.equals(biography, other.biography) && id == other.id && Objects.equals(name, other.name)
+		return Objects.equals(biography, other.biography) && Objects.equals(name, other.name)
 				&& Objects.equals(presentations, other.presentations) && Objects.equals(genre, other.genre);
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getName() {

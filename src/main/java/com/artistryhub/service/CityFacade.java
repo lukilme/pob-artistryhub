@@ -4,139 +4,115 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.artistryhub.dao.DAO;
-import com.artistryhub.exception.CustomException;
-import com.artistryhub.exception.ExceptionCode;
-import com.artistryhub.model.City;
 import com.artistryhub.model.Presentation;
+
+import com.artistryhub.dao.DAO;
+
+import com.artistryhub.exception.CityException;
+import com.artistryhub.model.City;
 
 public class CityFacade extends AbstractFacade<City> {
 	private static final int MIN_NAME = 4;
 	private static final int MAX_NAME = 32;
 
-	/**
-	 * This method creates a new artist instance and saves it to the database if it
-	 * complies with the business rules.
-	 *
-	 * @param name Unique name of the city.
-	 * @return The created instance of the city.
-	 * @throws CustomException with ExceptionCode.INVALID_NAME if the name is
-	 *                         invalid or are not unique.
-	 * @throws CustomException with ExceptionCode.UNIQUENESS_VIOLATION if name or id
-	 *                         are not unique.
-	 */
-	public City create(String name) {
-		DAO.begin();
-		// if something goes wrong, exceptions will be thrown
-		this.validateName(name);
-
-		if (DAOCity.read(name) != null) {
-			throw new CustomException("Uniqueness violated, the id or name must be unique",
-					ExceptionCode.UNIQUENESS_VIOLATION);
-			// Check if the name is unique
-		}
-		int newId = DAOCity.generatObsoleteId();
-		City newCity = new City(newId, name);
-		DAOCity.create(newCity);
-		DAO.commit();
-		return newCity;
-	}
-
-	/**
-	 * This method creates a new artist instance and saves it to the database if it
-	 * complies with the business rules.
-	 *
-	 * @param newCity Unique name of the city.
-	 * @return The created instance of the city.
-	 * @throws CustomException with ExceptionCode.INVALID_NAME if the name is
-	 *                         invalid or are not unique.
-	 * @throws CustomException with ExceptionCode.UNIQUENESS_VIOLATION if name or id
-	 *                         are not unique.
-	 */
-	public City create(City newCity) {
-		DAO.begin();
-		// if something goes wrong, exceptions will be thrown
-		this.validateName(newCity.getName());
-		// check if the name is unique
-		if (DAOCity.read(newCity.getName()) != null) {
-			throw new CustomException("Uniqueness violated, the name must be unique",
-					ExceptionCode.UNIQUENESS_VIOLATION);
-
-		}
-		if (DAOCity.read(newCity.getId()) != null) {
-			throw new CustomException("Uniqueness violated, the id must be unique", ExceptionCode.UNIQUENESS_VIOLATION);
-		}
-
-		DAOCity.create(newCity);
-		DAO.commit();
-		return newCity;
-	}
-
-	public List<City> readAll() {
+	@Override
+	public List<City> getAll() {
 		return DAOCity.readAll();
 	}
 
-	/**
-	 * This method analyzes whether the name has the appropriate size according to
-	 * business rules.
-	 *
-	 * @param name content to be checked.
-	 * @throws CustomException with ExceptionCode.MAX_NAME preventing the parent
-	 *                         method from continuing if the biography is null,
-	 *                         shorter than 4 characters or longer than 32
-	 *                         characters.
-	 */
-	public void validateName(String name) {
-		if (name == null || !Pattern.matches("^[a-zA-Z ]{4,32}$", name)) {
-			throw new CustomException("Name must contain only letters and spaces, and be between " + CityFacade.MIN_NAME
-					+ " and " + CityFacade.MAX_NAME + " characters.", ExceptionCode.INVALID_NAME);
+	public City create(String name) {
+		DAO.begin();
+		this.validateName(name);
+
+		if (DAOCity.read(name) != null) {
+			throw new CityException("Uniqueness violated, the id or name must be unique");
+
 		}
+
+		City newCity = new City(name);
+		DAOCity.create(newCity);
+		DAO.commit();
+		return newCity;
+	}
+
+	public City update(int index, String newName) {
+		DAO.begin();
+
+		List<City> allCities = DAOCity.readAll();
+
+		if (index < 0 || index >= allCities.size()) {
+
+			throw new CityException("City not found.");
+		}
+
+		City cityFound = allCities.get(index);
+
+		if (cityFound == null) {
+			throw new CityException("City not found.");
+		}
+
+		cityFound.setName(newName);
+		DAOCity.update(cityFound);
+
+		List<Presentation> presentationCity = cityFound.getPresentations();
+
+		for (Presentation presen : presentationCity) {
+			if (presen != null) {
+
+				DAOPresentation.update(presen);
+			}
+		}
+
+		DAO.commit();
+
+		return cityFound;
+	}
+	
+	public int getIndex(City city) {
+		List<City> allCities = DAOCity.readAll();
+		int index = 0;
+		for(int i=0; i < allCities.size(); i++) {
+			if(allCities.get(i).equals(city)) {
+				index = i;
+			};
+		}
+		return index;
 	}
 
 	public City search(Object key) {
 		return DAOCity.read(key);
 	}
 
-	public City update(City updatedCity) {
-		DAO.open();
+	public City delete(String key) {
 		DAO.begin();
-		City oldCity = search(updatedCity.getId());
-		if(oldCity == null) {
-			
-		}
-		DAO.commit();
-		return updatedCity;
-	}
 
-	public City delete(Object key) {
-		DAO.open();
-		DAO.begin();
-		City deletedCity = null;
-		if (key instanceof City) {
-			deletedCity = DAOCity.read(((City) key).getId());
-		} else {
-			deletedCity = DAOCity.read(key);
-		}
+		City deletedCity = DAOCity.read(key);
 
 		if (deletedCity == null) {
-			throw new CustomException("Artist not found.", ExceptionCode.ARTIST_NOT_FOUND);
+			throw new CityException("City not found.");
 		}
 
-		ArrayList<Presentation> cityPresentations = deletedCity.getPresentations();
+		List<Presentation> cityPresentations = new ArrayList<>(deletedCity.getPresentations());
 
 		if (cityPresentations != null) {
 			for (Presentation cityPresentation : cityPresentations) {
-				City cityRemovedPresentation = cityPresentation.getCity();
+				if (cityPresentation != null) {
+					City cityRemovedPresentation = cityPresentation.getCity();
 
-				cityRemovedPresentation.removePresentation(cityPresentation);
-				deletedCity.removePresentation(cityPresentation);
+					if (cityRemovedPresentation != null) {
+						cityRemovedPresentation.removePresentation(cityPresentation);
+						DAOCity.update(cityRemovedPresentation);
+					}
 
-				DAOCity.update(cityRemovedPresentation);
-				DAOPresentation.delete(cityPresentation);
+					deletedCity.getPresentations().remove(cityPresentation); // Remove the presentation from the city's
+																				// list
+					DAOPresentation.delete(cityPresentation); // Delete the presentation
+				}
 			}
 		}
 
 		DAOCity.delete(deletedCity);
+
 		DAO.commit();
 
 		return deletedCity;
@@ -146,4 +122,20 @@ public class CityFacade extends AbstractFacade<City> {
 		DAOCity.clear();
 	}
 
+	public void validateName(String name) {
+
+		if (name == null) {
+			throw new CityException("Name cannot be null.");
+		}
+
+		if (name.isEmpty() || !Pattern.matches("^[a-zA-Z ]+$", name)) {
+			throw new CityException("Name must contain only letters and spaces and cannot be empty.");
+		}
+
+		int length = name.length();
+		if (length < CityFacade.MIN_NAME || length > CityFacade.MAX_NAME) {
+			throw new CityException(
+					"Name must be between " + CityFacade.MIN_NAME + " and " + CityFacade.MAX_NAME + " characters.");
+		}
+	}
 }
