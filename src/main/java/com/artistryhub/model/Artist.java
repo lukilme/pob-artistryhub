@@ -1,14 +1,42 @@
 package com.artistryhub.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class Artist {
-	private String name;
-	private ArrayList<Presentation> presentations = new ArrayList<Presentation>();;
-	private String genre;
-	private String biography;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "artists") // Especifica o nome da tabela no banco de dados
+public class Artist {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "artist_id") // Define o nome da coluna no banco de dados
+    private Long id;
+
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
+
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Presentation> presentations = new ArrayList<>();
+
+    @Column(name = "genre", length = 50)
+    private String genre;
+
+    @Lob
+    @Column(name = "biography", columnDefinition = "TEXT") // Define que o campo biografia será armazenado como texto longo
+    private String biography;
+    
 	public Artist() {
 
 	}
@@ -50,7 +78,7 @@ public class Artist {
 		this.name = name;
 	}
 
-	public ArrayList<Presentation> getPresentations() {
+	public List<Presentation> getPresentations() {
 		return presentations;
 	}
 

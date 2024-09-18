@@ -2,15 +2,47 @@ package com.artistryhub.model;
 
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "presentations")
 public class Presentation {
-	private int id;
-	private String date;
-	private Artist artist;
-	private City city;
-	private double priceTicket;
-	private int duration;
-	private int ticketsSold;
-	private int ticketsTotal;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "presentation_id")
+    private Long id;
+
+    @Column(name = "date", nullable = false, length = 10) // Ex: "2023-09-18"
+    private String date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "artist_id", nullable = false)
+    private Artist artist;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id", nullable = false)
+    private City city;
+
+    @Column(name = "price_ticket", nullable = false)
+    private double priceTicket;
+
+    @Column(name = "duration", nullable = false)
+    private int duration;
+
+    @Column(name = "tickets_sold", nullable = false)
+    private int ticketsSold;
+
+    @Column(name = "tickets_total", nullable = false)
+    private int ticketsTotal;
 
 	public Presentation() {
 
@@ -52,11 +84,11 @@ public class Presentation {
 				&& Objects.equals(date, other.date);
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
