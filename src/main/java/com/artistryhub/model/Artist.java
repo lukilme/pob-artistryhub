@@ -33,7 +33,6 @@ public class Artist {
     @Column(name = "genre", length = 50)
     private String genre;
 
-    @Lob
     @Column(name = "biography", columnDefinition = "TEXT") // Define que o campo biografia será armazenado como texto longo
     private String biography;
     

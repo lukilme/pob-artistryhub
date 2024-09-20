@@ -16,14 +16,14 @@ public class Consult {
 			resultArtistQuery.forEach(System.out::println);
 
 			// Query 2: Artists by City and Date
-			System.out.println("Query Artist By City and Date Porto Alegre on 12/09/2024");
+			System.out.println("Query Artist By City and Date Porto Alegre on 12/09/2025");
 			List<Artist> resultArtistCityAndDate = facade.getArtistByDatePresentationInCity("Porto Alegre",
-					"12/09/2024");
+					"12/09/2025");
 			resultArtistCityAndDate.forEach(System.out::println);
 
 			// Query 3: Presentations by Date
-			System.out.println("Query Presentation by Date 10/11/2024");
-			List<Presentation> presentationsByDate = facade.getPresentationByDate("10/11/2024");
+			System.out.println("Query Presentation by Date 10/11/2025");
+			List<Presentation> presentationsByDate = facade.getPresentationByDate("10/11/2025");
 			presentationsByDate.forEach(System.out::println);
 		} catch (Exception excep) {
 			System.out.println(excep.getMessage());

@@ -35,7 +35,6 @@ public class MainView {
 					});
 				} catch (Exception e) {
 					facade.finish();
-
 					e.printStackTrace();
 				}
 			}
@@ -59,7 +58,6 @@ public class MainView {
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JButton ArtistButton = new JButton("Artist");
 		ArtistButton.addActionListener(new ActionListener() {

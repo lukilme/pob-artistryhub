@@ -1,6 +1,6 @@
 package com.artistryhub.view;
 
-import java.awt.EventQueue;
+
 
 import javax.swing.JFrame;
 import java.awt.Color;
@@ -18,8 +18,6 @@ import com.artistryhub.model.Artist;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -36,27 +34,24 @@ public class ArtistView {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ArtistView window = new ArtistView();
-					window.frame.setVisible(true);
-					window.frame.addWindowListener(new WindowAdapter() {
-						@Override
-						public void windowClosing(WindowEvent e) {
-							facade.finish();
-							System.exit(0);
-						}
-					});
-				} catch (Exception e) {
-					facade.finish();
-
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//	    EventQueue.invokeLater(new Runnable() {
+//	        public void run() {
+//	            try {
+//	                ArtistView window = new ArtistView();
+//	                window.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//	                window.frame.setVisible(true);
+//	                window.frame.addWindowListener(new WindowAdapter() {
+//	                    @Override
+//	                    public void windowClosing(WindowEvent e) {
+//	                    }
+//	                });
+//	            } catch (Exception e) {
+//	                e.printStackTrace();
+//	            }
+//	        }
+//	    });
+//	}
 
 	public JFrame getFrame() {
 		return this.frame;
@@ -67,6 +62,7 @@ public class ArtistView {
 	 */
 	public ArtistView() {
 		initialize();
+		frame.setVisible(true);
 	}
 
 	public void setFacade(Facade newFacade) {
@@ -95,7 +91,7 @@ public class ArtistView {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(0, 102, 204));
 		frame.getContentPane().setLayout(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 28, 433, 400);
@@ -251,7 +247,6 @@ public class ArtistView {
 		updateViewArtist();
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 820, 478);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	}
 }

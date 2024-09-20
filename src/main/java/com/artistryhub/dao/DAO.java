@@ -13,6 +13,7 @@ import jakarta.persistence.TypedQuery;
 public abstract class DAO<T> implements DAOInterface<T> {
 	protected static EntityManager manager;
 	protected static int currentMaxId = 1;
+	@SuppressWarnings("unused")
 	private static boolean isOpen = false;
 
 	@SuppressWarnings("unused")

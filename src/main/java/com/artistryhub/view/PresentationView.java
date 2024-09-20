@@ -36,26 +36,26 @@ public class PresentationView {
 	private static Facade facade = new Facade();
 	private JTextField idFiled;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PresentationView window = new PresentationView();
-					window.frame.setVisible(true);
-					window.frame.addWindowListener(new WindowAdapter() {
-						@Override
-						public void windowClosing(WindowEvent e) {
-							facade.finish();
-							System.exit(0);
-						}
-					});
-				} catch (Exception e) {
-					facade.finish();
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					PresentationView window = new PresentationView();
+//					window.frame.setVisible(true);
+//					window.frame.addWindowListener(new WindowAdapter() {
+//						@Override
+//						public void windowClosing(WindowEvent e) {
+//							facade.finish();
+//							System.exit(0);
+//						}
+//					});
+//				} catch (Exception e) {
+//					facade.finish();
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	public JFrame getFrame() {
 		return this.frame;
@@ -101,7 +101,7 @@ public class PresentationView {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(0, 102, 204));
 		frame.getContentPane().setLayout(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 28, 433, 400);
@@ -420,6 +420,6 @@ public class PresentationView {
 		showPresentationData.setEditable(false);
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 820, 478);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 	}
 }

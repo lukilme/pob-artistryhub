@@ -33,6 +33,7 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 		validateBiography(biography);
 
 		if (DAOArtist.read(name) != null) {
+			DAO.rollback();
 			throw new ArtistException("Uniqueness violated, the id or name must be unique");
 		}
 
@@ -121,6 +122,7 @@ public class ArtistFacade extends AbstractFacade<Artist> {
 	public void validateName(String name) {
 
 		if (name == null) {
+			
 			throw new ArtistException("Name cannot be null.");
 		}
 
