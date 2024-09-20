@@ -2,186 +2,73 @@ package com.artistryhub.dao;
 
 import java.util.List;
 
+
 import com.artistryhub.model.Artist;
 import com.artistryhub.model.City;
-import com.db4o.query.Candidate;
-import com.db4o.query.Evaluation;
-import com.db4o.query.Query;
-
 import com.artistryhub.model.Presentation;
+
+import jakarta.persistence.TypedQuery;
 
 public class DAOPresentation extends DAO<Presentation> {
 
-	@Override
-	public Presentation read(Object key) {
-		Query query = manager.query();
-		query.constrain(Presentation.class);
-		query.descend("id").constrain(key);
-		List<Presentation> result = query.execute();
-		if (!result.isEmpty()) {
-			return result.get(0);
-		} else {
-			return null;
-		}
-	}
+
+    @Override
+    public Presentation read(Object key) {
+        TypedQuery<Presentation> query = manager.createQuery("SELECT p FROM Presentation p WHERE p.id = :id", Presentation.class);
+        query.setParameter("id", key);
+        List<Presentation> result = query.getResultList();
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    @Override
+    public void create(Presentation newPresentation) {
+     
+        manager.persist(newPresentation);
+    }
+
+    public Presentation getCombination(Artist artist, City city, String date) {
+        TypedQuery<Presentation> query = manager.createQuery(
+            "SELECT p FROM Presentation p WHERE p.artist = :artist AND p.city = :city AND p.date = :date", Presentation.class);
+        query.setParameter("artist", artist);
+        query.setParameter("city", city);
+        query.setParameter("date", date);
+        List<Presentation> result = query.getResultList();
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    public List<Presentation> getByDate(String date) {
+        TypedQuery<Presentation> query = manager.createQuery(
+            "SELECT p FROM Presentation p WHERE p.date = :date", Presentation.class);
+        query.setParameter("date", date);
+        return query.getResultList();
+    }
+
+    public List<Presentation> getByArtist(Artist artist) {
+        TypedQuery<Presentation> query = manager.createQuery(
+            "SELECT p FROM Presentation p WHERE p.artist = :artist", Presentation.class);
+        query.setParameter("artist", artist);
+        return query.getResultList();
+    }
+
+    public List<Presentation> getByCityAndDate(City city, String date) {
+        TypedQuery<Presentation> query = manager.createQuery(
+            "SELECT p FROM Presentation p WHERE p.city = :city AND p.date = :date", Presentation.class);
+        query.setParameter("city", city);
+        query.setParameter("date", date);
+        return query.getResultList();
+    }
+
+    public List<Presentation> getByCityAndArtist(City city, Artist artist) {
+        TypedQuery<Presentation> query = manager.createQuery(
+            "SELECT p FROM Presentation p WHERE p.city = :city AND p.artist = :artist", Presentation.class);
+        query.setParameter("city", city);
+        query.setParameter("artist", artist);
+        return query.getResultList();
+    }
 
 	@Override
-	public void create(Presentation newPresentation) {
-		if (newPresentation.getId() == 0) {
-			newPresentation.setId(super.generateId());
-		}
-		manager.store(newPresentation);
+	public void clear() {
+		// TODO Auto-generated method stub
+		
 	}
-
-	public Presentation getCombination(Artist artist, City city, String date) {
-		Query query = manager.query();
-		query.constrain(Presentation.class);
-		query.constrain(new DifferentDatePresentationEvaluation(artist, city, date));
-		List<Presentation> result = query.execute();
-		if (result.isEmpty())
-			return null;
-		else
-			return result.get(0);
-
-	}
-
-	public List<Presentation> getByDate(String date) {
-		Query query = manager.query();
-		query.constrain(Presentation.class);
-		query.constrain(new PresentationByDate(date));
-		return query.execute();
-	}
-
-	public List<Presentation> getByArtist(Artist artist) {
-		Query query = manager.query();
-		query.constrain(Presentation.class);
-		query.constrain(new PresentationByArtist(artist));
-		return query.execute();
-	}
-
-	public List<Presentation> getByCityAndDate(City city, String date) {
-		Query query = manager.query();
-		query.constrain(Presentation.class);
-		query.constrain(new PresentationByCityAndDate(city, date));
-		return query.execute();
-	}
-
-	public List<Presentation> getByCityAndArtist(City city, Artist artist) {
-		Query query = manager.query();
-		query.constrain(Presentation.class);
-		query.constrain(new PresentationByCityAndArtist(city, artist));
-		return query.execute();
-	}
-	// second option:
-
-	// public List<Presentation> getByCityAndArtist(City city, Artist artist) {
-	// Query query = manager.query(); query.constrain(Presentation.class);
-	// query.constrain(new PresentationByCity(city));
-	// query.constrain(new PresentationByCity(Artist));
-	// return query.execute();
-	// }
-
-	private static class PresentationByArtist implements Evaluation {
-		private static final long serialVersionUID = 1L;
-		private final Artist artist;
-
-		public PresentationByArtist(Artist artist) {
-			this.artist = artist;
-		}
-
-		@Override
-		public void evaluate(Candidate candidate) {
-			Presentation presentation = (Presentation) candidate.getObject();
-			if (presentation.getArtist().equals(artist)) {
-				candidate.include(true);
-			} else {
-				candidate.include(false);
-			}
-		}
-	}
-
-	private static class PresentationByDate implements Evaluation {
-		private static final long serialVersionUID = 1L;
-		private final String date;
-
-		public PresentationByDate(String date) {
-			this.date = date;
-		}
-
-		@Override
-		public void evaluate(Candidate candidate) {
-			Presentation presentation = (Presentation) candidate.getObject();
-			if (presentation.getDate().equals(date)) {
-				candidate.include(true);
-			} else {
-				candidate.include(false);
-			}
-		}
-	}
-
-	public final class DifferentDatePresentationEvaluation implements Evaluation {
-		private static final long serialVersionUID = 1L;
-		private final Artist artist;
-		private final City city;
-		private final String presentationDate;
-
-		public DifferentDatePresentationEvaluation(Artist artist, City city, String presentationDate) {
-			this.artist = artist;
-			this.city = city;
-			this.presentationDate = presentationDate;
-		}
-
-		@Override
-		public void evaluate(Candidate candidate) {
-			Presentation presentation = (Presentation) candidate.getObject();
-			if (presentation.getArtist().equals(artist) && presentation.getCity().equals(city)
-					&& presentation.getDate().equals(presentationDate)) {
-				candidate.include(true);
-			} else {
-				candidate.include(false);
-			}
-		}
-	}
-
-	private static class PresentationByCityAndDate implements Evaluation {
-		private static final long serialVersionUID = 1L;
-		private final City city;
-		private final String date;
-
-		public PresentationByCityAndDate(City city, String date) {
-			this.city = city;
-			this.date = date;
-		}
-
-		@Override
-		public void evaluate(Candidate candidate) {
-			Presentation presentation = (Presentation) candidate.getObject();
-			if (presentation.getCity().equals(city) && presentation.getDate().equals(date))
-				candidate.include(true);
-			else
-				candidate.include(false);
-		}
-	}
-
-	private static class PresentationByCityAndArtist implements Evaluation {
-		private static final long serialVersionUID = 1L;
-		private final City city;
-		private final Artist artist;
-
-		public PresentationByCityAndArtist(City city, Artist artist) {
-			this.city = city;
-			this.artist = artist;
-		}
-
-		@Override
-		public void evaluate(Candidate candidate) {
-			Presentation presentation = (Presentation) candidate.getObject();
-			if (presentation.getCity().equals(city) && presentation.getArtist().equals(artist)) {
-				candidate.include(true);
-			} else {
-				candidate.include(false);
-			}
-		}
-	}
-
 }

@@ -1,23 +1,23 @@
 package com.artistryhub.dao;
 
 import java.util.List;
-
-import com.db4o.query.Query;
-
+import jakarta.persistence.TypedQuery;
 import com.artistryhub.model.City;
 
 public class DAOCity extends DAO<City> {
 
 	@Override
 	public City read(Object key) {
-		Query query = manager.query();
-		query.constrain(City.class);
-		query.descend("name").constrain((String) key);
-		List<City> result = query.execute();
-		if (result.size() > 0)
-			return result.get(0);
-		else
-			return null;
+		TypedQuery<City> query = manager.createQuery("SELECT c FROM City c WHERE c.name = :name", City.class);
+		query.setParameter("name", (String) key);
+		List<City> result = query.getResultList();
+		return result.isEmpty() ? null : result.get(0);
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
