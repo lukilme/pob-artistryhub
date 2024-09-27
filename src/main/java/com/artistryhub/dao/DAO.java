@@ -69,7 +69,6 @@ public abstract class DAO<T> implements DAOInterface<T> {
 	public static void commit() {
 		if (manager.getTransaction().isActive()) {
 			manager.getTransaction().commit();
-			// manager.clear(); // ---- esvazia o cache de objetos, se habilitado----
 		}
 	}
 

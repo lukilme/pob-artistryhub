@@ -17,24 +17,22 @@ public class Utility {
     public static EntityManager connectDataBase() {
     	if(manager == null) {
     		try {
-    			Properties dados = new Properties();
-				logger.info("----conectar banco - lendo arquivo de propriedades ");
-				dados.load(Utility.class.getResourceAsStream("util.properties")); // dentro de src
-				String sgbd = dados.getProperty("sgbd");
-				String banco = dados.getProperty("database");
-				String ip = dados.getProperty("ip1");
+				logger.info("----conectar banco - lendo arquivo de propriedades...");
+
+				String sgbd = "postgresql";
+				String banco = "artistryhub";
+				String ip = "localhost";
 				logger.info("sgbd => " + sgbd);
 				logger.info("banco => " + banco);
 				logger.info("ip => " + ip);
-	
+
 				Properties configuracoes = new Properties();
 				if (sgbd.equals("postgresql")) {
 					logger.info("----configurando postgresql");
 					configuracoes.setProperty("jakarta.persistence.jdbc.driver", "org.postgresql.Driver");
-					configuracoes.setProperty("jakarta.persistence.jdbc.url",
-							"jdbc:postgresql://" + ip + ":5432/" + banco);
+					configuracoes.setProperty("jakarta.persistence.jdbc.url", "jdbc:postgresql://postgres:5432/" + banco); // Altere aqui
 					configuracoes.setProperty("jakarta.persistence.jdbc.user", "postgres");
-					configuracoes.setProperty("jakarta.persistence.jdbc.password", "");
+					configuracoes.setProperty("jakarta.persistence.jdbc.password", "password");
 				}
 				if (sgbd.equals("mysql")) {
 					logger.info("----configurando mysql");
@@ -44,12 +42,7 @@ public class Utility {
 					configuracoes.setProperty("jakarta.persistence.jdbc.user", "root");
 					configuracoes.setProperty("jakarta.persistence.jdbc.password", "");
 				}
-				if(sgbd.equals("db4o")) {
-					
-				}
-				if(sgbd.equals("firestore")) {
-					
-				}
+
 				// -----------------------------------------------------------------------------------
 				String unit_name = "hibernate" + "-" + sgbd;
 				factory = Persistence.createEntityManagerFactory(unit_name, configuracoes);
